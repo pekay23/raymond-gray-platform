@@ -1,1 +1,0 @@
-# raymond-gray-platform
