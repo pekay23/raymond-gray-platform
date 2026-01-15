@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@prisma/client": "^5.18.0",
+    "@prisma/client": "^5.22.0",
     "framer-motion": "^12.26.2",
     "next": "16.1.2",
     "prisma": "^5.18.0",
