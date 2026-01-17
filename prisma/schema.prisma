@@ -16,3 +16,13 @@ model Inquiry {
   message   String
   createdAt DateTime @default(now())
 }
+
+model ArrivalConfirmation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  workOrder String
+  code      String
+  latitude  Float?
+  longitude Float?
+  status    String   @default("CONFIRMED")
+}

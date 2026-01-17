@@ -1,23 +1,23 @@
 import Link from "next/link";
-import Image from "next/image"; // Don't forget this import
+import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="bg-slate-900 text-white py-12">
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-8">
+    <footer className="bg-slate-900 text-white py-16">
+      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12">
         
         {/* Brand & Logo */}
         <div>
-          {/* LOGO UPDATE */}
-          <div className="relative h-10 w-48 mb-6">
+          {/* LOGO UPDATE: Removed filters to show original colors, increased size */}
+          <div className="relative h-12 w-56 mb-6">
             <Image 
               src="/RaymondGray.svg" 
               alt="Raymond Gray" 
               fill 
-              className="object-contain object-left brightness-0 invert" // Makes black logo white
+              className="object-contain object-left"
             />
           </div>
-          <p className="text-gray-300 leading-relaxed">
+          <p className="text-gray-400 leading-relaxed text-sm">
             Leading provider of integrated facilities management solutions in Ghana.<br />
             Proactive quality. Seamless possibility.
           </p>
@@ -25,35 +25,51 @@ export function Footer() {
         
         {/* Quick Links */}
         <div>
-          <h4 className="text-xl font-semibold mb-4">Quick Links</h4>
-          <ul className="space-y-3">
+          <h4 className="text-lg font-bold mb-6 text-white">Quick Links</h4>
+          <ul className="space-y-3 text-gray-400 text-sm">
             <li><Link href="/" className="hover:text-red-500 transition">Home</Link></li>
             <li><Link href="/about" className="hover:text-red-500 transition">About Us</Link></li>
             <li><Link href="/services" className="hover:text-red-500 transition">Services</Link></li>
+            <li><Link href="/faqs" className="hover:text-red-500 transition">FAQs</Link></li>
             <li><Link href="/contact" className="hover:text-red-500 transition">Contact</Link></li>
           </ul>
         </div>
         
         {/* Contact Info */}
         <div>
-          <h4 className="text-xl font-semibold mb-4">Contact Us</h4>
-          <ul className="space-y-3 text-gray-300">
-            <li>Accra, Greater Accra Region<br />Ghana</li>
-            <li>Phone: +233 55 555 5555</li>
-            <li>Email: info@raymond-gray.org</li>
+          <h4 className="text-lg font-bold mb-6 text-white">Contact Us</h4>
+          <ul className="space-y-4 text-gray-400 text-sm">
+            <li className="leading-relaxed">
+              Accra, Greater Accra Region<br />Ghana
+            </li>
+            <li>
+              <span className="block text-xs text-gray-500 uppercase tracking-wider mb-1">Phone</span>
+              <a href="tel:+233551010108" className="hover:text-white transition">+233 551 010 108</a>
+            </li>
+            <li>
+              <span className="block text-xs text-gray-500 uppercase tracking-wider mb-1">Email</span>
+              <div className="flex flex-col gap-1">
+                <a href="mailto:contactus@raymond-gray.org" className="hover:text-white transition">contactus@raymond-gray.org</a>
+                <a href="mailto:repairs@raymond-gray.org" className="hover:text-white transition">repairs@raymond-gray.org</a>
+              </div>
+            </li>
           </ul>
         </div>
         
         {/* Social / Connect */}
         <div>
-          <h4 className="text-xl font-semibold mb-4">Stay Connected</h4>
-          <p className="text-gray-300">
+          <h4 className="text-lg font-bold mb-6 text-white">Stay Connected</h4>
+          <p className="text-gray-400 text-sm mb-6">
             Follow us for updates on facilities management excellence.
           </p>
+          {/* Placeholder for future social icons */}
+          <div className="flex gap-4">
+            {/* You can add icons here later */}
+          </div>
         </div>
       </div>
       
-      <div className="mt-12 pt-8 border-t border-gray-700 text-center text-gray-400">
+      <div className="mt-16 pt-8 border-t border-slate-800 text-center text-gray-500 text-xs">
         <p>&copy; {new Date().getFullYear()} Raymond Gray. All rights reserved.</p>
       </div>
     </footer>
