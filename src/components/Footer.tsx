@@ -8,10 +8,10 @@ export function Footer() {
         
         {/* Brand & Logo */}
         <div>
-          {/* LOGO UPDATE: Removed filters to show original colors, increased size */}
-          <div className="relative h-12 w-56 mb-6">
+          {/* LOGO UPDATE: Doubled size on desktop */}
+          <div className="relative h-16 w-64 md:h-24 md:w-96 mb-6">
             <Image 
-              src="/RaymondGray.svg" 
+              src="/raymond-gray-logo1.svg" 
               alt="Raymond Gray" 
               fill 
               className="object-contain object-left"
@@ -32,6 +32,28 @@ export function Footer() {
             <li><Link href="/services" className="hover:text-red-500 transition">Services</Link></li>
             <li><Link href="/faqs" className="hover:text-red-500 transition">FAQs</Link></li>
             <li><Link href="/contact" className="hover:text-red-500 transition">Contact</Link></li>
+          </ul>
+        </div>
+
+        {/* Portals */}
+        <div>
+          <h4 className="text-lg font-bold mb-6 text-white">Portals</h4>
+          <ul className="space-y-3 text-gray-400 text-sm">
+            <li>
+              <Link href="/client/dashboard" className="hover:text-blue-400 transition flex items-center gap-2">
+                Client Portal
+              </Link>
+            </li>
+            <li>
+              <Link href="/technician/dashboard" className="hover:text-green-400 transition flex items-center gap-2">
+                Technician Access
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/dashboard" className="hover:text-amber-400 transition flex items-center gap-2">
+                Admin Dashboard
+              </Link>
+            </li>
           </ul>
         </div>
         
@@ -56,17 +78,6 @@ export function Footer() {
           </ul>
         </div>
         
-        {/* Social / Connect */}
-        <div>
-          <h4 className="text-lg font-bold mb-6 text-white">Stay Connected</h4>
-          <p className="text-gray-400 text-sm mb-6">
-            Follow us for updates on facilities management excellence.
-          </p>
-          {/* Placeholder for future social icons */}
-          <div className="flex gap-4">
-            {/* You can add icons here later */}
-          </div>
-        </div>
       </div>
       
       <div className="mt-16 pt-8 border-t border-slate-800 text-center text-gray-500 text-xs">

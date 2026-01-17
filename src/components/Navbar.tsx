@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { User } from "lucide-react";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,14 +23,15 @@ export function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm"
+      // UPDATED: Height increased to h-24 to fit the larger logo
+      className="fixed top-0 left-0 right-0 z-50 bg-[#1E3059]/95 backdrop-blur-md border-b border-white/10 shadow-lg h-24 flex items-center"
     >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="max-w-7xl w-full mx-auto px-6 flex justify-between items-center h-full">
         
-        {/* LOGO UPDATE: Linked to SVG */}
-        <Link href="/" className="relative h-12 w-56 hover:opacity-90 transition">
+        {/* LOGO UPDATED: Doubled size (h-24 w-96 on desktop) */}
+        <Link href="/" className="relative h-16 w-64 md:h-24 md:w-96 hover:opacity-90 transition">
           <Image 
-            src="/RaymondGray.svg" 
+            src="/raymond-gray-logo1.svg" 
             alt="Raymond Gray" 
             fill 
             className="object-contain object-left"
@@ -38,26 +40,34 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex space-x-8 text-lg font-medium">
+        <div className="hidden md:flex items-center space-x-8 text-lg font-medium">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={`transition ${
                 pathname === link.href 
-                  ? "text-red-700 font-bold" 
-                  : "text-slate-600 hover:text-red-700"
+                  ? "text-white font-bold" 
+                  : "text-gray-300 hover:text-white"
               }`}
             >
               {link.label}
             </Link>
           ))}
+
+          {/* SIGN IN BUTTON */}
+          <Link 
+            href="/signin" 
+            className="flex items-center gap-2 px-5 py-2 bg-white text-[#1E3059] rounded-lg text-sm font-bold hover:bg-gray-100 transition shadow-md"
+          >
+            <User className="w-4 h-4" /> Sign In
+          </Link>
         </div>
 
         {/* Mobile Hamburger */}
         <button 
           onClick={() => setIsOpen(!isOpen)} 
-          className="md:hidden text-slate-900 focus:outline-none"
+          className="md:hidden text-white focus:outline-none"
         >
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
@@ -73,7 +83,7 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white border-t border-gray-200"
+            className="md:hidden bg-[#1E3059] border-t border-white/10 shadow-xl absolute top-24 left-0 right-0"
           >
             <div className="px-6 py-4 space-y-4 text-lg font-medium">
               {navLinks.map((link) => (
@@ -83,13 +93,21 @@ export function Navbar() {
                   onClick={() => setIsOpen(false)}
                   className={`block transition ${
                     pathname === link.href 
-                      ? "text-red-700 font-bold" 
-                      : "text-slate-600 hover:text-red-700"
+                      ? "text-white font-bold" 
+                      : "text-gray-300 hover:text-white"
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
+              
+              <Link 
+                href="/signin" 
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center gap-2 w-full px-5 py-3 bg-white text-[#1E3059] rounded-lg text-base font-bold hover:bg-gray-100 transition"
+              >
+                <User className="w-5 h-5" /> Sign In
+              </Link>
             </div>
           </motion.div>
         )}

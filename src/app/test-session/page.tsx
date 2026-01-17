@@ -1,36 +1,77 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react"; // Import getSession
+import { useState, Suspense } from "react";
+import { useRouter } from "next/navigation";
 
-export default function TestSession() {
-  const { data: session, status } = useSession();
+function SignInForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
 
-  if (status === "loading") return <p className="text-center mt-10">Loading session...</p>;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // 1. Sign In (Don't redirect automatically yet)
+    const result = await signIn("credentials", { 
+      email, 
+      password, 
+      redirect: false, 
+    });
+
+    if (result?.ok) {
+      // 2. Get the new session to see the Role
+      const session = await getSession();
+      const role = session?.user?.role;
+
+      // 3. Redirect based on Role
+      if (role === "ADMIN") {
+        router.push("/admin/dashboard");
+      } else if (role === "TECHNICIAN") {
+        router.push("/technician/dashboard"); // We'll build this next
+      } else {
+        router.push("/"); // Clients go home
+      }
+      
+      // Force a refresh to ensure navbar updates
+      router.refresh();
+    } else {
+      alert("Login failed.");
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-10">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-6 text-navy-900">Session & Role Test</h1>
-        {session ? (
-          <div>
-            <p className="text-lg mb-4">Signed in as: <strong>{session.user?.email}</strong></p>
-            <p className="text-lg mb-6">Role: <strong className="text-red-700">{session.user?.role || "No role set"}</strong></p>
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="bg-red-700 hover:bg-red-800 text-white px-6 py-3 rounded-md font-semibold transition"
-            >
-              Sign Out
-            </button>
-          </div>
-        ) : (
-          <div>
-            <p className="text-lg mb-6">Not signed in</p>
-            <a href="/signin" className="bg-red-700 hover:bg-red-800 text-white px-6 py-3 rounded-md font-semibold transition inline-block">
-              Go to Sign In
-            </a>
-          </div>
-        )}
-      </div>
+    <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+      <h2 className="text-2xl font-bold mb-6 text-center text-slate-900">Sign In</h2>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full px-4 py-2 border mb-4 rounded text-slate-900"
+        required
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-full px-4 py-2 border mb-6 rounded text-slate-900"
+        required
+      />
+      <button type="submit" className="w-full bg-red-700 text-white py-3 rounded hover:bg-red-800 font-bold">
+        Sign In & Go
+      </button>
+    </form>
+  );
+}
+
+export default function SignIn() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <Suspense fallback={<div>Loading...</div>}>
+        <SignInForm />
+      </Suspense>
     </div>
   );
 }

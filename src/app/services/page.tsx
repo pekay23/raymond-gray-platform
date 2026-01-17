@@ -4,22 +4,70 @@ import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { ArrowRight, ShieldCheck, Phone } from "lucide-react";
+import { ArrowRight, ShieldCheck, Phone, Wrench, Zap, Building2 } from "lucide-react";
 
-// Soft Services Data
+// Soft Services Data with Images
 const softServices = [
-  { title: "Front desk and Help desk", desc: "Reception/front desk, visitor management, switchboard, helpdesk ticketing and concierge." },
-  { title: "Manned security solutions", desc: "Uniformed guarding, reception security, patrols, keyholding, event security and 24/7 cover." },
-  { title: "Canteen & corporate catering", desc: "Staff canteens, boardroom/events catering, menu planning, HACCP-aligned operations." },
-  { title: "Landscaping & grounds maintenance", desc: "Lawn care, hedging, tree work, irrigation checks and paving upkeep." },
-  { title: "Waste Management", desc: "Segregation, bins & collections, recycling and compliant disposal." },
-  { title: "Travel management solutions", desc: "Flights, hotels & apartments, visas, ground transport, group bookings and travel policy compliance." },
-  { title: "Events management & coordination", desc: "Venue sourcing, catering, AV/production, staffing, guest logistics and run-of-show coordination." },
-  { title: "Pest control / fumigation", desc: "Preventive treatments, targeted eradication, monitoring and proofing." },
-  { title: "Mail, dispatch & logistics", desc: "On-site mailroom, courier dispatch, inter-office pouch runs, last-mile deliveries and tracked errands." },
-  { title: "Real estate services", desc: "Valuations, listings, tenanting and lease support for owners & investors." },
-  { title: "Insurance & risk management", desc: "Property & fleet insurance placement, renewals, claims handling and risk surveys." },
-  { title: "Cleaning and janitorial", desc: "Daily & periodic cleaning, deep cleans, washroom hygiene and consumables." },
+  { 
+    title: "Front desk and Help desk", 
+    desc: "Reception/front desk, visitor management, switchboard, helpdesk ticketing and concierge.",
+    img: "/helpdesk.jpg"
+  },
+  { 
+    title: "Manned security solutions", 
+    desc: "Uniformed guarding, reception security, patrols, keyholding, event security and 24/7 cover.",
+    img: "/security.jpg"
+  },
+  { 
+    title: "Canteen & corporate catering", 
+    desc: "Staff canteens, boardroom/events catering, menu planning, HACCP-aligned operations.",
+    img: "/catering.jpg"
+  },
+  { 
+    title: "Landscaping & grounds maintenance", 
+    desc: "Lawn care, hedging, tree work, irrigation checks and paving upkeep.",
+    img: "/landscaping.jpg"
+  },
+  { 
+    title: "Waste Management", 
+    desc: "Segregation, bins & collections, recycling and compliant disposal.",
+    img: "/waste.jpg"
+  },
+  { 
+    title: "Travel management solutions", 
+    desc: "Flights, hotels & apartments, visas, ground transport, group bookings and travel policy compliance.",
+    img: "/travel.jpg"
+  },
+  { 
+    title: "Events management & coordination", 
+    desc: "Venue sourcing, catering, AV/production, staffing, guest logistics and run-of-show coordination.",
+    img: "/events.jpg"
+  },
+  { 
+    title: "Pest control / fumigation", 
+    desc: "Preventive treatments, targeted eradication, monitoring and proofing.",
+    img: "/fumigation.jpg"
+  },
+  { 
+    title: "Mail, dispatch & logistics", 
+    desc: "On-site mailroom, courier dispatch, inter-office pouch runs, last-mile deliveries and tracked errands.",
+    img: "/msil.jpg"
+  },
+  { 
+    title: "Real estate services", 
+    desc: "Valuations, listings, tenanting and lease support for owners & investors.",
+    img: "/realest.jpg"
+  },
+  { 
+    title: "Insurance & risk management", 
+    desc: "Property & fleet insurance placement, renewals, claims handling and risk surveys.",
+    img: "/insurance.jpg"
+  },
+  { 
+    title: "Cleaning and janitorial", 
+    desc: "Daily & periodic cleaning, deep cleans, washroom hygiene and consumables.",
+    img: "/cleaning.jpg"
+  },
 ];
 
 export default function ServicesPage() {
@@ -75,7 +123,6 @@ export default function ServicesPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            {/* 1. Emergency Repairs - UPDATED IMAGE */}
             <TiltServiceCard 
               title="24/7 Emergency Repairs"
               desc="Rapid response for critical faults. We are always ready."
@@ -85,19 +132,17 @@ export default function ServicesPage() {
               color="red"
             />
 
-            {/* 2. On-Demand Repair */}
             <TiltServiceCard 
               title="On-Demand Repair Services"
               desc="Quick fixes for everyday breakdowns and wear-and-tear."
-              linkHref="/services/scheduled"  // <--- UPDATED LINK
+              linkHref="/services/scheduled"
               linkText="Request Repair"
-              img="/ondemand.jpg"
+              img="https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=800&q=80"
               color="blue"
             />
 
-            {/* 3. Scheduled Equipment Maintenance - UPDATED IMAGE */}
             <TiltServiceCard 
-              title="Scheduled Equipment Maintenance"
+              title="Scheduled Maintenance"
               desc="Preventive servicing for HVAC, generators, and pumps."
               linkHref="/services/servicing"
               linkText="Schedule Service"
@@ -105,7 +150,6 @@ export default function ServicesPage() {
               color="blue"
             />
 
-            {/* 4. Building Audit */}
             <TiltServiceCard 
               title="Building Integrity Audit"
               desc="Comprehensive pre-takeover inspection and performance audits."
@@ -115,17 +159,15 @@ export default function ServicesPage() {
               color="blue"
             />
 
-            {/* 5. Interior Design */}
             <TiltServiceCard 
               title="Interior Design & Finishing"
               desc="Transforming spaces with high-end aesthetics."
               linkHref="mailto:interiors@raymond-gray.org"
               linkText="Email Interiors Team"
-              img="/intdes.jpg"
+              img="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80"
               color="red"
             />
 
-            {/* 6. Vehicle Fleet - UPDATED IMAGE */}
             <TiltServiceCard 
               title="Vehicle Fleet Maintenance"
               desc="Professional auto-mechanic services for corporate fleets."
@@ -135,33 +177,30 @@ export default function ServicesPage() {
               color="blue"
             />
 
-            {/* 7. Real Estate */}
             <TiltServiceCard 
               title="Real Estate Services"
               desc="Sales, rentals, and property management."
               linkHref="mailto:realestate@raymond-gray.org"
               linkText="Email Real Estate"
-              img="/realest.jpg"
+              img="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80"
               color="red"
             />
 
-            {/* 8. IFM Link */}
             <TiltServiceCard 
               title="Integrated Facility Management"
               desc="Total care for your building's soft and hard services."
               linkHref="/services/ifm"
               linkText="View IFM Page"
-              img="/ifm.jpg"
+              img="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
               color="blue"
             />
 
-             {/* 9. Construction Link */}
              <TiltServiceCard 
               title="Construction Finishing"
               desc="Expert tiling, painting, and POP installation."
               linkHref="/services/construction"
               linkText="View Construction Page"
-              img="/constru.jpg"
+              img="https://images.unsplash.com/photo-1595846519845-68e298c2edd8?auto=format&fit=crop&w=800&q=80"
               color="red"
             />
 
@@ -169,7 +208,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* 3. SOFT SERVICES (Interactive Reveal) */}
+      {/* 3. SOFT SERVICES (Interactive Reveal with Images) */}
       <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
         
@@ -184,7 +223,7 @@ export default function ServicesPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {softServices.map((service, index) => (
-              <SoftServiceCard key={index} title={service.title} desc={service.desc} />
+              <SoftServiceCard key={index} title={service.title} desc={service.desc} img={service.img} />
             ))}
           </div>
         </div>
@@ -241,7 +280,6 @@ function TiltServiceCard({ title, desc, linkText, linkHref, color, img }: { titl
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity" />
 
       <div className="absolute inset-0 flex flex-col justify-end p-8" style={{ transform: "translateZ(30px)" }}>
-        {/* NO ICONS HERE anymore */}
         <h3 className="text-2xl font-bold text-white mb-2 leading-tight">{title}</h3>
         <p className="text-slate-300 text-sm mb-6 line-clamp-2">{desc}</p>
         
@@ -255,24 +293,36 @@ function TiltServiceCard({ title, desc, linkText, linkHref, color, img }: { titl
   );
 }
 
-// --- INTERACTIVE SOFT SERVICE CARD ---
-function SoftServiceCard({ title, desc }: { title: string, desc: string }) {
+// --- INTERACTIVE SOFT SERVICE CARD WITH IMAGE ---
+function SoftServiceCard({ title, desc, img }: { title: string, desc: string, img: string }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative h-40 bg-white/5 border border-white/10 rounded-xl overflow-hidden cursor-pointer group"
+      className="relative h-64 rounded-2xl overflow-hidden cursor-pointer group shadow-lg border border-slate-700/50"
     >
-      {/* Default State (Title Only) */}
-      <div className={`absolute inset-0 flex items-center justify-center p-6 text-center transition-opacity duration-300 ${isHovered ? "opacity-0" : "opacity-100"}`}>
-        <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">{title}</h3>
+      {/* Background Image */}
+      <Image 
+        src={img} 
+        alt={title} 
+        fill 
+        className={`object-cover transition-transform duration-700 ${isHovered ? "scale-110 blur-sm" : "scale-100"}`} 
+      />
+      
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-slate-900/70 group-hover:bg-slate-900/90 transition-colors duration-300" />
+
+      {/* Default State (Title Centered) */}
+      <div className={`absolute inset-0 flex items-center justify-center p-6 text-center transition-all duration-300 ${isHovered ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
+        <h3 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">{title}</h3>
       </div>
 
       {/* Reveal State (Description) */}
-      <div className={`absolute inset-0 flex items-center justify-center p-6 text-center bg-blue-900/90 transition-opacity duration-300 ${isHovered ? "opacity-100" : "opacity-0"}`}>
-        <p className="text-sm text-white font-medium leading-relaxed">{desc}</p>
+      <div className={`absolute inset-0 flex flex-col items-center justify-center p-8 text-center transition-all duration-300 ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+        <h3 className="text-xl font-bold text-blue-400 mb-3">{title}</h3>
+        <p className="text-sm text-slate-200 font-medium leading-relaxed">{desc}</p>
       </div>
     </motion.div>
   );
