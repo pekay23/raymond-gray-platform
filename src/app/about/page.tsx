@@ -12,7 +12,7 @@ export default function About() {
       {/* 1. HERO SECTION */}
       <section className="relative h-[80vh] md:h-screen flex items-center justify-center overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2070&q=90"
+          src="/ifm.jpg"
           alt="Raymond Gray Operations"
           fill
           className="object-cover scale-110" 
@@ -110,7 +110,7 @@ export default function About() {
             >
               <div className="relative h-[700px] rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
                 <Image
-                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1000&q=90"
+                  src="/grayteam.jpg"
                   alt="Raymond Gray Team"
                   fill
                   className="object-cover"
@@ -139,11 +139,11 @@ export default function About() {
           </motion.div>
 
           <div className="grid md:grid-cols-6 gap-6 h-auto md:h-[600px]">
-            <ValueCard className="md:col-span-2 md:row-span-1" title="Sustainability" desc="Recycling & Renewables." icon={<Leaf />} img="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=500&q=80" />
-            <ValueCard className="md:col-span-2" title="Integrity" desc="Transparent & Reliable." icon={<ShieldCheck />} img="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=500&q=80" />
-            <ValueCard className="md:col-span-2" title="Partnership" desc="Long-term collaboration." icon={<Handshake />} img="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=500&q=80" />
-            <ValueCard className="md:col-span-3" title="Innovation" desc="Smart technologies and energy-efficient solutions." icon={<Lightbulb />} img="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" />
-            <ValueCard className="md:col-span-3" title="Safety First" desc="Zero accident culture, compliance-led operations." icon={<HardHat />} img="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80" />
+            <ValueCard className="md:col-span-2 md:row-span-1" title="Sustainability" desc="Recycling & Renewables." icon={<Leaf />} img="/renewables.jpg" />
+            <ValueCard className="md:col-span-2" title="Integrity" desc="Transparent & Reliable." icon={<ShieldCheck />} img="/ifm.jpg" />
+            <ValueCard className="md:col-span-2" title="Partnership" desc="Long-term collaboration." icon={<Handshake />} img="/colab.jpg" />
+            <ValueCard className="md:col-span-3" title="Innovation" desc="Smart technologies and energy-efficient solutions." icon={<Lightbulb />} img="/tech.jpg" />
+            <ValueCard className="md:col-span-3" title="Safety First" desc="Zero accident culture, compliance-led operations." icon={<HardHat />} img="/workethic.jpg" />
           </div>
         </div>
       </section>

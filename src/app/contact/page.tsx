@@ -49,7 +49,7 @@ export default function Contact() {
       {/* Using h-[60vh] to ensure it's tall enough, and object-center to prevent bad cropping */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900">
         <Image
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80"
+          src="/explreifm.jpg"
           alt="Contact Raymond Gray"
           fill
           className="object-cover opacity-40"

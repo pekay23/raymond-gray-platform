@@ -23,13 +23,13 @@ export function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
-      // UPDATED: Height increased to h-24 to fit the larger logo
-      className="fixed top-0 left-0 right-0 z-50 bg-[#1E3059]/95 backdrop-blur-md border-b border-white/10 shadow-lg h-24 flex items-center"
+      // FIXED HEIGHT: h-20 (80px)
+      className="fixed top-0 left-0 right-0 z-50 bg-[#1E3059]/95 backdrop-blur-md border-b border-white/10 shadow-lg h-20 flex items-center"
     >
       <div className="max-w-7xl w-full mx-auto px-6 flex justify-between items-center h-full">
         
-        {/* LOGO UPDATED: Doubled size (h-24 w-96 on desktop) */}
-        <Link href="/" className="relative h-16 w-64 md:h-24 md:w-96 hover:opacity-90 transition">
+        {/* LOGO */}
+        <Link href="/" className="relative h-20 w-80 hover:opacity-90 transition">
           <Image 
             src="/raymond-gray-logo1.svg" 
             alt="Raymond Gray" 
@@ -83,7 +83,7 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-[#1E3059] border-t border-white/10 shadow-xl absolute top-24 left-0 right-0"
+            className="md:hidden bg-[#1E3059] border-t border-white/10 shadow-xl absolute top-20 left-0 right-0"
           >
             <div className="px-6 py-4 space-y-4 text-lg font-medium">
               {navLinks.map((link) => (

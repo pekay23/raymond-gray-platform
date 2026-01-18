@@ -8,8 +8,8 @@ export function Footer() {
         
         {/* Brand & Logo */}
         <div>
-          {/* LOGO UPDATE: Doubled size on desktop */}
-          <div className="relative h-16 w-64 md:h-24 md:w-96 mb-6">
+          {/* LOGO UPDATE: Massive container (h-32 w-[600px]) */}
+          <div className="relative h-32 w-[600px] max-w-full mb-6">
             <Image 
               src="/raymond-gray-logo1.svg" 
               alt="Raymond Gray" 

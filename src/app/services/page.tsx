@@ -3,8 +3,11 @@
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowRight, ShieldCheck, Phone, Wrench, Zap, Building2 } from "lucide-react";
+import * as THREE from "three";
+// @ts-ignore
+import NET from "vanta/dist/vanta.net.min";
 
 // Soft Services Data with Images
 const softServices = [
@@ -71,6 +74,36 @@ const softServices = [
 ];
 
 export default function ServicesPage() {
+  const vantaRef = useRef<HTMLDivElement>(null);
+  const [vantaEffect, setVantaEffect] = useState<any>(null);
+
+  // Vanta.js Effect Hook
+  useEffect(() => {
+    if (!vantaEffect && vantaRef.current) {
+      setVantaEffect(
+        NET({
+          el: vantaRef.current,
+          THREE: THREE,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          scale: 1.00,
+          scaleMobile: 1.00,
+          color: 0x3b82f6, // Raymond Gray Blue
+          backgroundColor: 0xffffff, // White Background
+          points: 12.00,
+          maxDistance: 22.00,
+          spacing: 18.00
+        })
+      );
+    }
+    return () => {
+      if (vantaEffect) vantaEffect.destroy();
+    };
+  }, [vantaEffect]);
+
   return (
     <div className="bg-slate-50 overflow-hidden">
       
@@ -113,15 +146,15 @@ export default function ServicesPage() {
         </motion.div>
       </section>
 
-      {/* 2. CORE SERVICES GRID (3D Tilt - No Icons) */}
-      <section className="py-24 bg-white relative z-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
+      {/* 2. CORE SERVICES GRID (With Vanta Background) */}
+      <section ref={vantaRef} className="py-24 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative z-10 pointer-events-none">
+          <div className="text-center mb-16 pointer-events-auto">
             <h2 className="text-4xl font-bold text-slate-900 mb-4">Core Technical Services</h2>
             <p className="text-slate-600">Expert engineering, maintenance, and finishing solutions.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 pointer-events-auto">
             
             <TiltServiceCard 
               title="24/7 Emergency Repairs"
@@ -137,7 +170,7 @@ export default function ServicesPage() {
               desc="Quick fixes for everyday breakdowns and wear-and-tear."
               linkHref="/services/scheduled"
               linkText="Request Repair"
-              img="https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=800&q=80"
+              img="/ondemand.jpg"
               color="blue"
             />
 
@@ -164,7 +197,7 @@ export default function ServicesPage() {
               desc="Transforming spaces with high-end aesthetics."
               linkHref="mailto:interiors@raymond-gray.org"
               linkText="Email Interiors Team"
-              img="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80"
+              img="/interiordesign.jpg"
               color="red"
             />
 
@@ -182,7 +215,7 @@ export default function ServicesPage() {
               desc="Sales, rentals, and property management."
               linkHref="mailto:realestate@raymond-gray.org"
               linkText="Email Real Estate"
-              img="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80"
+              img="/realest.jpg"
               color="red"
             />
 
@@ -191,7 +224,7 @@ export default function ServicesPage() {
               desc="Total care for your building's soft and hard services."
               linkHref="/services/ifm"
               linkText="View IFM Page"
-              img="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+              img="/ifm.jpg"
               color="blue"
             />
 
@@ -200,7 +233,7 @@ export default function ServicesPage() {
               desc="Expert tiling, painting, and POP installation."
               linkHref="/services/construction"
               linkText="View Construction Page"
-              img="https://images.unsplash.com/photo-1595846519845-68e298c2edd8?auto=format&fit=crop&w=800&q=80"
+              img="/constructionfinishing.jpg"
               color="red"
             />
 
