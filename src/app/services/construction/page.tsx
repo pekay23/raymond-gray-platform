@@ -3,18 +3,23 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Ruler, PaintBucket, Sofa, CheckCircle2, Trophy, Clock, CheckSquare } from "lucide-react";
 import { useState, useEffect } from "react";
-
-// Generate array of 38 images
-const carouselImages = Array.from({ length: 38 }, (_, i) => `/i${i + 1}.jpg`);
+import { 
+  ArrowRight, 
+  PaintBucket, 
+  Ruler, 
+  Armchair, 
+  CheckCircle2, 
+  ChevronLeft, 
+  ChevronRight 
+} from "lucide-react";
 
 export default function ConstructionPage() {
   return (
     <div className="bg-white overflow-hidden">
       
       {/* 1. HERO SECTION */}
-      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-slate-900">
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-slate-900 pt-32 pb-20">
         <motion.div 
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
@@ -22,237 +27,391 @@ export default function ConstructionPage() {
           className="absolute inset-0 z-0"
         >
           <Image 
-            src="/constru.jpg"
+            src="/hero-construction-finishing.jpg"
             alt="Construction Finishing"
             fill
-            className="object-cover opacity-40"
+            className="object-cover opacity-50"
             priority
             quality={100}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
         </motion.div>
         
-        <div className="relative z-10 container mx-auto px-6">
+        <div className="relative z-10 text-center max-w-5xl px-6">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="max-w-3xl"
           >
-            <span className="text-amber-400 font-bold tracking-widest uppercase text-sm mb-4 block">
-              From Structural Shell to Exceptional Space
+             <span className="inline-block py-1 px-4 rounded-full bg-red-500/20 border border-red-400/30 text-red-300 text-sm font-bold tracking-widest uppercase mb-6 backdrop-blur-md">
+              Premium Interiors
             </span>
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Construction <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-500">Finishing</span>
-            </h1>
-            <p className="text-xl text-slate-200 font-light mb-8 leading-relaxed border-l-4 border-red-600 pl-6">
-              The Difference is in the Detail. We deliver environments that impress clients and inspire residents.
-            </p>
-            <p className="text-slate-400 mb-10 max-w-xl">
-              Bringing our engineering-grade discipline to interiors, we transform building shells into polished, functional, and beautiful work and living environments.
-            </p>
             
-            <Link href="/contact" className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full transition-all flex items-center gap-2 w-fit shadow-lg shadow-red-900/50">
-              Get a Quote for Your Fit-Out <ArrowRight className="w-5 h-5" />
-            </Link>
+            <h1 className="text-4xl md:text-7xl font-bold mb-6 leading-tight tracking-tight text-white">
+              Construction <br/> 
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-white">
+                Finishing
+              </span>
+            </h1>
+            
+            <p className="text-lg md:text-2xl text-slate-200 font-light max-w-3xl mx-auto leading-relaxed">
+              From Structural Shell to Exceptional Space
+            </p>
           </motion.div>
         </div>
       </section>
 
-      {/* 2. IMAGE CAROUSEL (Showcase) */}
-      <div className="bg-slate-900 py-4 overflow-hidden whitespace-nowrap">
-        <div className="inline-flex animate-scroll">
-          {/* Double the array to create infinite loop effect */}
-          {[...carouselImages, ...carouselImages].map((src, index) => (
-            <div key={index} className="relative w-64 h-40 mx-2 rounded-lg overflow-hidden shrink-0 border border-slate-700">
-              <Image src={src} alt="Project Gallery" fill className="object-cover hover:scale-110 transition-transform duration-500" />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. OUR SERVICES */}
+      {/* 2. INTRODUCTION SECTION */}
       <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl font-bold text-slate-900 mb-4">Our Finishing & Interior Services</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">We manage the entire journey from concept to completion.</p>
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 leading-tight">
+              From Structural Shell to <br/> <span className="text-red-600">Exceptional Space</span>
+            </h2>
+            <p className="text-lg text-slate-600 leading-relaxed mb-6">
+              Bringing our engineering-grade discipline to interiors, we transform building shells into polished, functional, and beautiful work and living environments, meeting the highest standards of craftsmanship.
+            </p>
+            <p className="text-lg text-slate-600 leading-relaxed font-medium">
+              Every step matters: paint lines, flooring, lighting, joinery; all executed to exacting standards.
+            </p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-12">
-            <ServiceCard 
-              icon={<Ruler />}
-              title="Interior Design & Space Planning"
-              desc="We create cohesive design plans that optimize flow, functionality, and brand alignment."
-              points={["Private & Corporate Design", "Space Optimization", "Material Selection", "3D Visualization"]}
-            />
-            <ServiceCard 
-              icon={<PaintBucket />}
-              title="Specialist Finishing Works"
-              desc="Where precision meets the eye. Flawless installations that stand the test of time."
-              points={["Flooring (LVT, Hardwood)", "Wall Finishes & Painting", "Suspended Ceilings", "Joinery & Millwork"]}
-            />
-            <ServiceCard 
-              icon={<Sofa />}
-              title="Fine Fixtures & Furnishing"
-              desc="Source, produce and install the elements that complete the space."
-              points={["Furniture Sourcing", "Lighting Installation", "Bathroom Sanitary Ware", "Artwork Styling"]}
+          <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl border border-slate-100">
+            <Image 
+              src="/collabconstruction.jpg"
+              alt="Construction Collaboration"
+              fill
+              className="object-cover"
             />
           </div>
         </div>
       </section>
 
-      {/* 4. THE STANDARD (Dark Section) */}
+      {/* 3. OUR FINISHING & INTERIOR SERVICES */}
+      <section className="py-24 bg-blue-50/60 relative">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-30 mix-blend-multiply pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">Our Finishing & Interior Services</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto text-lg">
+              We manage the entire journey from concept to completion.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Card 1: Design - Using /i2.jpg */}
+            <ServiceCard 
+              img="/i2.jpg"
+              icon={<Ruler />}
+              title="Interior Design & Space Planning"
+              desc="We work with you to create a cohesive design plan that optimizes flow, functionality, and style or brand alignment, ensuring the space works as beautifully as it looks."
+              items={[
+                "Private & Corporate Interior Design",
+                "Space Planning & Optimization",
+                "Material & Finishes Selection",
+                "3D Visualization & Renderings"
+              ]}
+            />
+
+            {/* Card 2: Specialist Finishing - Using /i10.jpg */}
+            <ServiceCard 
+              img="/i10.jpg"
+              icon={<PaintBucket />}
+              title="Specialist Finishing Works"
+              desc="This is where precision meets the eye. Our teams execute flawless installations that stand the test of time and scrutiny."
+              items={[
+                "Flooring: Carpeting, LVT, tiling, hardwood",
+                "Wall Finishes: Painting, wallpaper, feature walls",
+                "Ceilings: Suspended & acoustic solutions",
+                "Joinery & Millwork: Custom fixtures & cabinetry"
+              ]}
+            />
+
+            {/* Card 3: Fixtures - Using /i15.jpg */}
+            <ServiceCard 
+              img="/i15.jpg"
+              icon={<Armchair />}
+              title="Fine Fixtures & Furnishing"
+              desc="Source, produce and install the elements that complete the space. We procure, custom build and fit high-quality fixtures, furniture, and accessories that elevate the interior experience."
+              items={[
+                "Furniture Sourcing & Manufacture",
+                "Lighting Fixture Installation",
+                "Bathroom & Sanitary Ware Installation",
+                "Artwork & Accessory Styling"
+              ]}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* 4. THE RAYMOND GRAY FINISHING STANDARD */}
+      <section className="py-24 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+             <div className="order-2 lg:order-1 relative h-[600px] rounded-2xl overflow-hidden shadow-2xl">
+                <Image 
+                  src="/construfurn1.jpg"
+                  alt="Finishing Standard"
+                  fill
+                  className="object-cover"
+                />
+             </div>
+             
+             <div className="order-1 lg:order-2">
+                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-10">The Raymond Gray Finishing Standard</h2>
+                
+                <div className="space-y-10">
+                  <StandardItem 
+                    title="Principle 1: Meticulous Craftsmanship"
+                    desc="Our finishers are trained specialists, not general laborers. We take pride in razor-sharp paint lines, perfectly aligned wallpaper seams, and impeccably laid flooring."
+                  />
+                  <StandardItem 
+                    title="Principle 2: Project Management Discipline"
+                    desc="Even the most aesthetic-driven projects run on our core methodology: clear timelines, rigorous quality checks at each stage, and clean, safe worksites."
+                  />
+                  <StandardItem 
+                    title="Principle 3: Cohesive Integration"
+                    desc="As part of the Raymond Gray family, our finishing team works hand-in-glove with our engineers. This ensures that lighting, HVAC vents, and data points are seamlessly integrated into the final design, not added as an afterthought."
+                  />
+                </div>
+             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. CASE STUDY 1 */}
       <section className="py-24 bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <h2 className="text-4xl font-bold mb-8">The Raymond Gray Finishing Standard</h2>
-            <div className="space-y-8">
-              <StandardItem 
-                title="Meticulous Craftsmanship" 
-                desc="Our finishers are trained specialists. We take pride in razor-sharp paint lines, perfectly aligned seams, and impeccably laid flooring." 
-              />
-              <StandardItem 
-                title="Project Management Discipline" 
-                desc="Even aesthetic projects run on our core methodology: clear timelines, rigorous quality checks, and clean worksites." 
-              />
-              <StandardItem 
-                title="Cohesive Integration" 
-                desc="We work hand-in-glove with our engineers. Lighting, HVAC, and data points are seamlessly integrated, not added as an afterthought." 
-              />
-            </div>
-          </div>
-          <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-slate-700">
-             {/* Using Case Study 1 Image here as a feature */}
-             <Image src="/case1.jpg" alt="Finishing Standard" fill className="object-cover" />
-          </div>
-        </div>
-      </section>
-
-      {/* 5. CASE STUDIES */}
-      <section className="py-24 bg-slate-50 border-t border-slate-200">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-slate-900 mb-16 text-center">Recent Success Stories</h2>
-          
-          <div className="space-y-20">
-            {/* Case Study 1 */}
-            <div className="grid md:grid-cols-2 gap-12 items-center bg-white p-8 rounded-3xl shadow-lg border border-slate-100">
-              <div className="order-2 md:order-1">
-                <span className="text-red-600 font-bold tracking-wider text-sm uppercase mb-2 block">Case Study 1</span>
-                <h3 className="text-2xl font-bold text-slate-900 mb-4">Premium Training Facility</h3>
-                <p className="text-slate-600 mb-6 italic">"Delivering a European Approved Training Facility on an Accelerated Timeline"</p>
-                
-                <div className="space-y-4 text-sm text-slate-700">
-                  <p><strong>The Challenge:</strong> High-spec fit-out with a non-negotiable deadline for regulatory inspection.</p>
-                  <p><strong>The Solution:</strong> Coordinated phases of flooring, painting, and fixture installation alongside electrical and IT setup.</p>
-                  <div className="bg-green-50 p-4 rounded-xl border border-green-100 mt-4">
-                    <h4 className="font-bold text-green-800 mb-2 flex items-center gap-2"><Trophy className="w-4 h-4" /> The Result:</h4>
-                    <ul className="space-y-1 text-green-700 list-disc pl-4">
-                      <li>Completed 10 days ahead of schedule.</li>
-                      <li>99% snag-free handover.</li>
-                      <li>Direct client praise for craftsmanship.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="order-1 md:order-2 relative h-80 rounded-2xl overflow-hidden shadow-md">
-                <Image src="/case1.jpg" alt="Training Facility" fill className="object-cover" />
-              </div>
-            </div>
-
-            {/* Case Study 2 */}
-            <div className="grid md:grid-cols-2 gap-12 items-center bg-white p-8 rounded-3xl shadow-lg border border-slate-100">
-              <div className="relative h-80 rounded-2xl overflow-hidden shadow-md">
-                <Image src="/case2.jpg" alt="Custom Furniture" fill className="object-cover" />
-              </div>
+            <span className="text-red-400 font-bold uppercase tracking-widest text-sm mb-2 block">Finishing Case Study 1</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 leading-tight">Delivering a Premium European Approved Training Facility on an Accelerated Timeline</h2>
+            
+            <div className="space-y-6 text-slate-300">
               <div>
-                <span className="text-blue-600 font-bold tracking-wider text-sm uppercase mb-2 block">Case Study 2</span>
-                <h3 className="text-2xl font-bold text-slate-900 mb-4">Architect's Office Furniture</h3>
-                <p className="text-slate-600 mb-6 italic">"Delivering Custom Furniture Solutions for an Architect's Office"</p>
-                
-                <div className="space-y-4 text-sm text-slate-700">
-                  <p><strong>The Challenge:</strong> Specific needs for furniture to review large format drawings.</p>
-                  <p><strong>The Solution:</strong> In-house joinery team designed, manufactured, and installed bespoke pieces including partitions and flooring.</p>
-                  <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mt-4">
-                    <h4 className="font-bold text-blue-800 mb-2 flex items-center gap-2"><Trophy className="w-4 h-4" /> The Result:</h4>
-                    <ul className="space-y-1 text-blue-700 list-disc pl-4">
-                      <li>Completed on schedule with immediate repeat work.</li>
-                      <li>Client delighted with creativity and execution.</li>
-                    </ul>
-                  </div>
-                </div>
+                <h4 className="font-bold text-white mb-2">The Challenge:</h4>
+                <p>A client needed a high-spec interior fit-out for a flagship regional training academy, with a non-negotiable deadline for a major external regulatory inspection.</p>
+              </div>
+              
+              <div>
+                <h4 className="font-bold text-white mb-2">The Raymond Gray Solution:</h4>
+                <p>Our in-house finishing team managed the entire scope—from flooring and painting to the installation of fine fixtures working in coordinated phases with our engineers for electrical, cooling, IT network set up, camera installations, access controlled Identity solutions for students and audio visual systems for efficient delivery of training.</p>
+              </div>
+
+              <div className="bg-white/10 p-6 rounded-xl border border-white/10">
+                <h4 className="font-bold text-white mb-4">The Quantifiable Result:</h4>
+                <ul className="space-y-2">
+                  <ResultItem text="Completed the project 10 days ahead of schedule." />
+                  <ResultItem text="Achieved a 99% snag-free handover, a rarity in high-spec finishing." />
+                  <ResultItem text="Received direct praise from the end-client for the exceptional quality of the craftsmanship." />
+                </ul>
               </div>
             </div>
           </div>
-
+          <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl border border-slate-700">
+             <Image src="/case1.jpg" alt="Case Study 1" fill className="object-cover" />
+          </div>
         </div>
       </section>
 
-      {/* 6. CTA */}
-      <section className="py-24 bg-slate-900 text-center">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-white mb-6">Let's Discuss Your Project</h2>
-          <p className="text-slate-400 mb-8 max-w-2xl mx-auto">
-            See how our disciplined approach can bring your vision to life, on time and to the highest standard.
+       {/* 6. CASE STUDY 2 */}
+       <section className="py-24 bg-slate-50 text-slate-900">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+           <div className="order-2 lg:order-1 relative h-[500px] rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+             <Image src="/case2.jpg" alt="Case Study 2" fill className="object-cover" />
+          </div>
+          
+          <div className="order-1 lg:order-2">
+            <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Finishing Case Study 2</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 leading-tight">Delivering Custom Furniture Solutions for an Architect's Office</h2>
+            
+            <div className="space-y-6 text-slate-600">
+              <div>
+                <h4 className="font-bold text-slate-900 mb-2">The Challenge:</h4>
+                <p>A client needed custom-made furniture for their Office. As part of the request, they had specific needs for a particular furniture piece that would allow them to review large format drawings.</p>
+              </div>
+              
+              <div>
+                <h4 className="font-bold text-slate-900 mb-2">The Raymond Gray Solution:</h4>
+                <p>Our in-house woodworking and joinery team sat with the client to understand the specific preferences for office furniture, partitions and flooring. Having completed the initial engagements, the team got to work straightaway and designed, manufactured, delivered and installed all the furniture pieces within the agreed time frame.</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h4 className="font-bold text-slate-900 mb-4">The Quantifiable Result:</h4>
+                <ul className="space-y-2">
+                  <ResultItemDark text="Completed the project on schedule, with immediate repeat work furnishing the apartment of senior management." />
+                  <ResultItemDark text="The client was particularly pleased with the architect table and the creativity of the team." />
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. IMAGE CAROUSEL (Full set i1.jpg to i38.jpg) */}
+      <ImageCarousel />
+
+      {/* 8. CTA SECTION */}
+      <section className="py-24 bg-slate-900 text-center relative overflow-hidden">
+         <div className="relative z-10 max-w-4xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Let's discuss how our disciplined approach to construction finishing can bring your vision to life.</h2>
+          <p className="text-xl text-slate-300 mb-10">
+            On time and to the highest possible standard.
           </p>
-          <Link 
-            href="/contact" 
-            className="inline-flex items-center gap-2 px-10 py-4 bg-white text-slate-900 hover:bg-slate-200 font-bold rounded-full transition-all shadow-xl hover:-translate-y-1"
+          <a 
+            href="mailto:finishing@raymond-gray.org" 
+            className="inline-flex items-center gap-2 px-10 py-5 bg-red-600 text-white hover:bg-red-700 font-bold rounded-lg text-lg transition-all shadow-xl hover:-translate-y-1"
           >
-            Request a Quote <ArrowRight className="w-5 h-5" />
-          </Link>
+            Get a Quote for Your Fit-Out <ArrowRight className="w-5 h-5" />
+          </a>
         </div>
       </section>
-
-      {/* Tailwind Animation for Carousel */}
-      <style jsx global>{`
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-scroll {
-          animation: scroll 40s linear infinite;
-        }
-        .animate-scroll:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
 
     </div>
   );
 }
 
-// --- COMPONENTS ---
+// --- HELPER COMPONENTS ---
 
-function ServiceCard({ icon, title, desc, points }: { icon: any, title: string, desc: string, points: string[] }) {
+function ServiceCard({ title, desc, items, icon, img }: any) {
   return (
-    <div className="p-8 border border-slate-200 rounded-2xl hover:shadow-xl transition-all hover:-translate-y-1 group">
-      <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mb-6 text-slate-600 group-hover:bg-red-600 group-hover:text-white transition-colors">
-        <div className="[&>svg]:w-7 [&>svg]:h-7">{icon}</div>
+    <div className="bg-white rounded-2xl shadow-lg border border-slate-100 hover:shadow-xl transition-all group h-full flex flex-col hover:-translate-y-2 duration-300 overflow-hidden">
+      {/* Added Image Section */}
+      <div className="relative h-48 w-full">
+        <Image 
+          src={img} 
+          alt={title} 
+          fill 
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        <div className="absolute bottom-4 left-4 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-xl flex items-center justify-center text-red-600 shadow-sm">
+           <div className="[&>svg]:w-6 [&>svg]:h-6">{icon}</div>
+        </div>
       </div>
-      <h3 className="text-2xl font-bold text-slate-900 mb-3">{title}</h3>
-      <p className="text-slate-600 mb-6 leading-relaxed">{desc}</p>
-      <ul className="space-y-3">
-        {points.map((p, i) => (
-          <li key={i} className="flex items-center gap-2 text-sm text-slate-700 font-medium">
-            <CheckCircle2 className="w-4 h-4 text-green-500" /> {p}
-          </li>
-        ))}
-      </ul>
+      
+      <div className="p-8 flex flex-col flex-grow">
+        <h3 className="text-2xl font-bold text-slate-900 mb-4">{title}</h3>
+        <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">{desc}</p>
+        <div className="bg-blue-50/50 p-4 rounded-lg">
+          <ul className="space-y-2">
+            {items.map((item: string, idx: number) => (
+              <li key={idx} className="flex items-start gap-2 text-slate-700 text-sm font-medium">
+                <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
 
 function StandardItem({ title, desc }: { title: string, desc: string }) {
   return (
-    <div className="flex gap-4">
-      <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shrink-0 mt-1 shadow-lg shadow-blue-900/50">
-        <CheckSquare className="w-5 h-5 text-white" />
-      </div>
-      <div>
-        <h4 className="text-xl font-bold text-white mb-2">{title}</h4>
-        <p className="text-slate-400 leading-relaxed">{desc}</p>
-      </div>
+    <div>
+      <h3 className="text-xl font-bold text-slate-900 mb-2 flex items-center gap-3">
+        <CheckCircle2 className="text-red-600 w-6 h-6" />
+        {title}
+      </h3>
+      <p className="text-slate-600 pl-9 leading-relaxed">{desc}</p>
     </div>
+  );
+}
+
+function ResultItem({ text }: { text: string }) {
+  return (
+    <li className="flex items-start gap-3 text-slate-300 text-sm">
+      <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />
+      <span>{text}</span>
+    </li>
+  );
+}
+
+function ResultItemDark({ text }: { text: string }) {
+  return (
+    <li className="flex items-start gap-3 text-slate-600 text-sm">
+      <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
+      <span>{text}</span>
+    </li>
+  );
+}
+
+// --- CAROUSEL COMPONENT ---
+function ImageCarousel() {
+  // Create array of images /i1.jpg to /i38.jpg (ALL INCLUDED)
+  const images = Array.from({ length: 38 }, (_, i) => `/i${i + 1}.jpg`);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Auto-scroll effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3000); // Change every 3 seconds
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  return (
+    <section className="py-24 bg-black overflow-hidden relative">
+      <div className="max-w-7xl mx-auto px-6 text-center mb-10">
+        <h2 className="text-3xl font-bold text-white mb-2">Our Portfolio Gallery</h2>
+        <p className="text-slate-400">A showcase of our finishing excellence.</p>
+      </div>
+
+      <div className="relative max-w-5xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
+        <Image 
+          src={images[currentIndex]} 
+          alt={`Gallery Image ${currentIndex + 1}`} 
+          fill 
+          className="object-contain bg-black"
+        />
+        
+        {/* Navigation Arrows */}
+        <button 
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full backdrop-blur-sm transition-all"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button 
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-3 rounded-full backdrop-blur-sm transition-all"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+
+        {/* Counter */}
+        <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm font-mono backdrop-blur-md">
+          {currentIndex + 1} / {images.length}
+        </div>
+      </div>
+      
+      {/* Thumbnail Strip */}
+      <div className="max-w-5xl mx-auto mt-6 flex gap-2 overflow-x-auto pb-4 justify-center">
+        {[-2, -1, 0, 1, 2].map((offset) => {
+            const index = (currentIndex + offset + images.length) % images.length;
+            return (
+                <div 
+                    key={index} 
+                    onClick={() => setCurrentIndex(index)}
+                    className={`relative w-24 h-16 shrink-0 rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+                        offset === 0 ? 'border-red-500 scale-110 z-10' : 'border-transparent opacity-50 hover:opacity-100'
+                    }`}
+                >
+                    <Image src={images[index]} alt="thumb" fill className="object-cover" />
+                </div>
+            )
+        })}
+      </div>
+    </section>
   );
 }

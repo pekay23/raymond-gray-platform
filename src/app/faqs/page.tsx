@@ -3,7 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
+import Image from "next/image";
 
+// ... (FAQ Data remains the same) ...
 // Categorized FAQ Data
 const faqData = [
   {
@@ -62,7 +64,7 @@ const faqData = [
     ]
   },
   {
-    category: "Pricing & Payments", // Shortened title for mobile tabs
+    category: "Pricing & Payments",
     questions: [
       {
         q: "How is pricing shown?",
@@ -79,7 +81,7 @@ const faqData = [
     ]
   },
   {
-    category: "Safety & Insurance", // Shortened title
+    category: "Safety & Insurance",
     questions: [
       {
         q: "Do you offer a workmanship guarantee?",
@@ -130,7 +132,6 @@ export default function FAQ() {
   // Scroll to top of content when category changes (mobile friendliness)
   useEffect(() => {
     if (contentRef.current && window.innerWidth < 1024) {
-      // Small offset to account for sticky navs
       const yOffset = -150; 
       const y = contentRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
@@ -140,12 +141,44 @@ export default function FAQ() {
   return (
     <div className="bg-slate-50 min-h-screen pb-24">
       
-      {/* 1. Header Section */}
-      <section className="bg-slate-900 pt-32 pb-12 text-white text-center px-6">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h1>
-        <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-          Everything you need to know about Raymond Gray’s services.
-        </p>
+      {/* 1. HERO SECTION */}
+      {/* Changed pt-32 to pt-48 to push content down below the navbar */}
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-900 pt-48 pb-20">
+        <motion.div 
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5 }}
+          className="absolute inset-0 z-0"
+        >
+          <Image 
+            src="/faqs.jpg"
+            alt="Frequently Asked Questions"
+            fill
+            className="object-cover opacity-50"
+            priority
+            quality={100}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
+        </motion.div>
+        
+        <div className="relative z-10 text-center px-6">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl md:text-6xl font-bold mb-4 text-white"
+          >
+            Frequently Asked Questions
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-xl text-slate-200 max-w-2xl mx-auto"
+          >
+            Everything you need to know about Raymond Gray’s services.
+          </motion.p>
+        </div>
       </section>
 
       {/* 2. MOBILE NAVIGATION (Horizontal Scroll Tabs) */}
@@ -213,7 +246,6 @@ export default function FAQ() {
             </a>
           </div>
         </div>
-
       </div>
     </div>
   );
@@ -237,7 +269,7 @@ function FAQItem({ question, answer }: { question: string, answer: string }) {
           {isOpen ? <Minus className="w-5 h-5 text-red-500" /> : <Plus className="w-5 h-5" />}
         </span>
       </button>
-
+      
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div

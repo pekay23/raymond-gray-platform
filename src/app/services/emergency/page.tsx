@@ -288,11 +288,11 @@ export default function EmergencyRepairPage() {
 
                 {/* 7-9. Contact Info */}
                 <div className="grid md:grid-cols-2 gap-6">
-                  <InputField label="7. Your name" name="name" value={formData.name} onChange={handleChange} required />
+                  <InputField label="7. Your name" name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" required />
                   <InputField label="8. Phone (WhatsApp)" name="phone" value={formData.phone} onChange={handleChange} placeholder="+233..." required />
                 </div>
                 
-                <InputField label="9. Email" type="email" name="email" value={formData.email} onChange={handleChange} required />
+                <InputField label="9. Email" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="name@example.com" required />
 
                 {/* 11. Agreement */}
                 <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 text-sm text-slate-700 space-y-3 shadow-inner">

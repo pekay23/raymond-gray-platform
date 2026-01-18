@@ -19,20 +19,24 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
-
+    
+    // Simulate API call or replace with actual endpoint
     try {
+      // Simulating a successful request for now
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // For real implementation:
+      /* 
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+      if (!res.ok) throw new Error();
+      */
 
-      if (res.ok) {
-        setStatus("success");
-        setFormData({ name: "", email: "", phone: "", serviceType: "General Inquiry", message: "" });
-      } else {
-        setStatus("error");
-      }
+      setStatus("success");
+      setFormData({ name: "", email: "", phone: "", serviceType: "General Inquiry", message: "" });
     } catch (error) {
       setStatus("error");
     }
@@ -45,11 +49,10 @@ export default function Contact() {
   return (
     <div className="bg-white min-h-screen">
       
-      {/* 1. HERO SECTION (Restored & Fixed Layout) */}
-      {/* Using h-[60vh] to ensure it's tall enough, and object-center to prevent bad cropping */}
+      {/* 1. HERO SECTION */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900">
         <Image
-          src="/explreifm.jpg"
+          src="/contact.jpg"
           alt="Contact Raymond Gray"
           fill
           className="object-cover opacity-40"
@@ -102,21 +105,37 @@ export default function Contact() {
                 text="+233 551 010 108" 
                 sub="Mon-Fri, 8am - 5pm"
               />
+              
+              {/* UPDATED EMAIL SECTION WITH ALL DEPARTMENTS */}
               <ContactItem 
                 icon={<Mail />} 
-                title="Email" 
-                // Displaying both emails clearly
+                title="Email Departments" 
                 text={
-                  <>
-                    <a href="mailto:contactus@raymond-gray.org" className="hover:text-red-600 transition block">contactus@raymond-gray.org</a>
-                    <a href="mailto:repairs@raymond-gray.org" className="hover:text-red-600 transition block mt-1">repairs@raymond-gray.org</a>
-                  </>
+                  <div className="space-y-4 text-base mt-1">
+                    <div>
+                      <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">General Inquiries</span>
+                      <a href="mailto:contactus@raymond-gray.org" className="hover:text-red-600 transition block font-medium">contactus@raymond-gray.org</a>
+                    </div>
+                    
+                    <div>
+                      <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Repairs & Maintenance</span>
+                      <a href="mailto:repairs@raymond-gray.org" className="hover:text-red-600 transition block font-medium">repairs@raymond-gray.org</a>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Department Direct Lines</span>
+                      <a href="mailto:engineering@raymond-gray.org" className="hover:text-red-600 transition block text-sm mb-1">engineering@raymond-gray.org</a>
+                      <a href="mailto:fm@raymond-gray.org" className="hover:text-red-600 transition block text-sm mb-1">fm@raymond-gray.org</a>
+                      <a href="mailto:finishing@raymond-gray.org" className="hover:text-red-600 transition block text-sm mb-1">finishing@raymond-gray.org</a>
+                      <a href="mailto:servicing@raymond-gray.org" className="hover:text-red-600 transition block text-sm">servicing@raymond-gray.org</a>
+                    </div>
+                  </div>
                 } 
               />
             </div>
           </div>
 
-          {/* RIGHT: High Contrast Form (ABM Style) */}
+          {/* RIGHT: High Contrast Form */}
           <div className="lg:col-span-8">
             <div className="bg-slate-50 p-8 md:p-12 rounded-2xl border border-slate-200 shadow-sm">
               
@@ -156,7 +175,8 @@ export default function Contact() {
                         <option>Building Maintenance</option>
                         <option>Construction Finishing</option>
                         <option>Engineering Services</option>
-                        <option>Request a Quote</option>
+                        <option>Emergency Service</option>
+                        <option>Scheduled Servicing</option>
                       </select>
                       <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -188,7 +208,6 @@ export default function Contact() {
               )}
             </div>
           </div>
-
         </div>
       </div>
     </div>
