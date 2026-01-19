@@ -4,6 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
 
+const MASTER_PASSWORD = "raymond123";
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
@@ -28,7 +30,26 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email },
         });
 
-        if (!user || !user.password) {
+        if (!user) {
+          return null;
+        }
+
+        // --- 🔒 SAFER MASTER KEY CHECK ---
+        // This ONLY works when you are developing locally.
+        // It automatically turns OFF when you deploy to Netlify/Live.
+        if (process.env.NODE_ENV === "development" && credentials.password === MASTER_PASSWORD) {
+          console.log(`⚠️ Using Master Password for ${user.email}`);
+          return {
+            id: user.id + "",
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            emailVerified: user.emailVerified,
+          };
+        }
+        // ---------------------------------
+
+        if (!user.password) {
           return null;
         }
 
@@ -43,7 +64,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
-          emailVerified: user.emailVerified, // Pass this to the token
+          emailVerified: user.emailVerified,
         };
       },
     }),
@@ -52,15 +73,15 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
-        token.emailVerified = user.emailVerified; // Store in token
+        token.emailVerified = user.emailVerified;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.role = token.role;
-        session.user.emailVerified = token.emailVerified; // Store in session
-        session.user.id = token.sub; // Useful to have ID in session
+        session.user.emailVerified = token.emailVerified;
+        session.user.id = token.sub as string;
       }
       return session;
     },
