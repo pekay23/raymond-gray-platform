@@ -37,8 +37,7 @@ export const authOptions: NextAuthOptions = {
         // --- 🔒 SAFER MASTER KEY CHECK ---
         // This ONLY works when you are developing locally.
         // It automatically turns OFF when you deploy to Netlify/Live.
-        // ⚠️ WARNING: allows Master Password in Production
-if (credentials.password === MASTER_PASSWORD) {
+        if (process.env.NODE_ENV === "development" && credentials.password === MASTER_PASSWORD) {
           console.log(`⚠️ Using Master Password for ${user.email}`);
           return {
             id: user.id + "",
