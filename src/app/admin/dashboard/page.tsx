@@ -3,13 +3,14 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { FileText, AlertCircle, CheckCircle, Clock } from "lucide-react";
-import { AnalyticsCharts } from "@/components/admin/AnalyticsCharts";
+import { AnalyticsCharts } from "@/components/admin/AnalyticsCharts"; // Import the charts
 import { format, subDays } from "date-fns";
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
 
   if (!session || session.user?.role !== "ADMIN") {
+    // ... access denied code ...
     return <div>Access Denied</div>;
   }
 
@@ -81,41 +82,52 @@ export default async function AdminDashboard() {
           <Link href="/admin/inquiries" className="text-sm text-blue-600 hover:underline font-medium">View All</Link>
         </div>
         
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+        {/* ADDED: no-scrollbar class to hide scrollbar but allow swipe */}
+        <div className="overflow-x-auto no-scrollbar">
+          <table className="w-full text-left text-sm min-w-[800px]">
             <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider border-b border-slate-200">
               <tr>
-                <th className="p-4 font-semibold">Date</th>
-                <th className="p-4 font-semibold">Client</th>
-                <th className="p-4 font-semibold">Type</th>
+                <th className="p-4 font-semibold w-32">Date</th>
+                <th className="p-4 font-semibold w-48">Client</th>
+                <th className="p-4 font-semibold w-32">Type</th>
                 <th className="p-4 font-semibold">Details</th>
-                <th className="p-4 font-semibold text-right">Action</th>
+                <th className="p-4 font-semibold text-right w-24">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {inquiries.slice(0, 10).map((job) => (
                 <tr key={job.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="p-4 text-slate-500 whitespace-nowrap">
+                  <td className="p-4 text-slate-500 whitespace-nowrap align-top">
                     {new Date(job.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="p-4 font-medium text-slate-900">
+                  <td className="p-4 font-medium text-slate-900 align-top">
                     {job.name}
-                    <span className="block text-xs text-slate-400 font-normal">{job.phone || "No Phone"}</span>
+                    <span className="block text-xs text-slate-400 font-normal truncate max-w-[150px]">{job.phone || "No Phone"}</span>
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 align-top">
                     <ServiceBadge message={job.message} />
                   </td>
-                  <td className="p-4 text-slate-600 max-w-xs truncate" title={job.message}>
-                    {job.message}
+                  <td className="p-4 text-slate-600 align-top">
+                    {/* ADDED: line-clamp-2 to prevent huge height */}
+                    <div className="line-clamp-2 max-w-sm" title={job.message}>
+                      {job.message}
+                    </div>
                   </td>
-                  <td className="p-4 text-right">
-                    {/* FIXED LINK: Points to /admin/inquiries/[id] */}
-                    <Link href={`/admin/inquiries/${job.id}`} className="inline-block text-blue-600 hover:text-blue-800 font-bold text-xs bg-blue-50 px-3 py-1 rounded-full transition-colors">
+                  <td className="p-4 text-right align-top">
+                    <Link href={`/admin/inquiries/${job.id}`} className="inline-block text-blue-600 hover:text-blue-800 font-bold text-xs bg-blue-50 px-3 py-1 rounded-full whitespace-nowrap transition-colors">
                       View
                     </Link>
                   </td>
                 </tr>
               ))}
+              
+              {inquiries.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="p-12 text-center text-slate-400">
+                    No inquiries found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -125,6 +137,7 @@ export default async function AdminDashboard() {
 }
 
 // --- HELPER COMPONENTS ---
+
 function StatCard({ title, value, icon }: { title: string, value: number, icon: any }) {
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition-shadow">

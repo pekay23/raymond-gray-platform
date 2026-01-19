@@ -16,7 +16,7 @@ export default function InquiriesPage() {
       const res = await fetch("/api/admin/inquiries");
       if (res.ok) {
         const data = await res.json();
-        setInquiries(Array.isArray(data) ? data : []); // Ensure it's an array
+        setInquiries(Array.isArray(data) ? data : []);
       } else {
         setInquiries([]);
       }
@@ -63,7 +63,8 @@ export default function InquiriesPage() {
       </div>
       
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Added 'no-scrollbar' class here */}
+        <div className="overflow-x-auto no-scrollbar">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
