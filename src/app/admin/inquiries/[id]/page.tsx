@@ -74,6 +74,7 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
             <InfoBox icon={<Phone />} label="Phone Number" value={inquiry.phone || "N/A"} href={inquiry.phone ? `tel:${inquiry.phone}` : undefined} />
           </div>
 
+                    {/* Message Content */}
           <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
               <MessageSquare className="w-4 h-4" /> Message Content
