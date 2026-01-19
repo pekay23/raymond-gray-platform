@@ -1,11 +1,11 @@
 "use client";
 
 import { signIn, getSession } from "next-auth/react";
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react"; // Added useEffect
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Loader2, AlertCircle, ArrowLeft, Lock, Mail } from "lucide-react";
+import { Loader2, AlertCircle, ArrowLeft, Lock, Mail, CheckCircle } from "lucide-react"; // Added CheckCircle
 import { motion } from "framer-motion";
 
 function SignInForm() {
@@ -13,16 +13,26 @@ function SignInForm() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(""); // Added success state
   
   const router = useRouter();
   const searchParams = useSearchParams();
   
   const callbackUrl = searchParams.get("callbackUrl");
+  const registered = searchParams.get("registered"); // Check for param
+
+  // Show success message if redirected from signup
+  useEffect(() => {
+    if (registered) {
+      setSuccess("Account created successfully! Please sign in.");
+    }
+  }, [registered]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setSuccess(""); // Clear success message on try
 
     // 1. Sign In
     const result = await signIn("credentials", { 
@@ -32,7 +42,7 @@ function SignInForm() {
     });
 
     if (result?.ok) {
-      // 2. Redirect based on callback or Role
+      // 2. Redirect logic...
       if (callbackUrl) {
         router.push(callbackUrl);
         router.refresh();
@@ -64,6 +74,7 @@ function SignInForm() {
         <p className="text-slate-500 text-sm">Sign in to access your portal</p>
       </div>
 
+      {/* ERROR MESSAGE */}
       {error && (
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
@@ -72,6 +83,18 @@ function SignInForm() {
         >
           <AlertCircle className="w-5 h-5 shrink-0" />
           {error}
+        </motion.div>
+      )}
+
+      {/* SUCCESS MESSAGE */}
+      {success && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-green-50 text-green-700 p-4 rounded-lg mb-6 flex items-center gap-3 text-sm font-medium border border-green-100"
+        >
+          <CheckCircle className="w-5 h-5 shrink-0" />
+          {success}
         </motion.div>
       )}
 
@@ -108,6 +131,15 @@ function SignInForm() {
           </div>
         </div>
 
+        <div className="flex justify-end">
+          <Link 
+            href="/auth/forgot-password" 
+            className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
+          >
+            Forgot your password?
+          </Link>
+        </div>
+
         <button 
           type="submit" 
           disabled={isLoading}
@@ -117,7 +149,16 @@ function SignInForm() {
         </button>
       </form>
 
-      <div className="mt-8 text-center">
+      <div className="mt-6 text-center">
+        <p className="text-slate-600 text-sm">
+          Don't have an account?{' '}
+          <Link href="/auth/signup" className="text-blue-600 font-bold hover:underline">
+            Create one now
+          </Link>
+        </p>
+      </div>
+
+      <div className="mt-8 text-center border-t border-slate-100 pt-6">
         <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-blue-600 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
@@ -129,8 +170,6 @@ function SignInForm() {
 export default function SignIn() {
   return (
     <div className="min-h-screen flex bg-slate-50">
-      
-      {/* Left Side - Image/Brand (Hidden on Mobile) */}
       <div className="hidden lg:flex w-1/2 relative bg-slate-900 overflow-hidden items-center justify-center">
         <Image 
           src="/hero-home.jpg" 
@@ -140,7 +179,6 @@ export default function SignIn() {
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-900/80 to-blue-900/40" />
-        
         <div className="relative z-10 text-white p-12 max-w-lg">
           <div className="w-16 h-1 bg-blue-500 mb-6" />
           <h1 className="text-4xl font-bold mb-4 leading-tight">Professional Facility Management</h1>
@@ -150,13 +188,11 @@ export default function SignIn() {
         </div>
       </div>
 
-      {/* Right Side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 pt-24 lg:pt-6">
         <Suspense fallback={<div className="text-slate-500">Loading form...</div>}>
           <SignInForm />
         </Suspense>
       </div>
-
     </div>
   );
 }

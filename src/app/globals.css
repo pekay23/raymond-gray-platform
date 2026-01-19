@@ -18,11 +18,22 @@
   --accent-glow: rgba(217, 35, 45, 0.2);
 }
 
+html,
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  /* CRITICAL FIX: Lock horizontal scroll */
+  max-width: 100vw;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* Vanta.js Canvas Fix */
+canvas {
+  max-width: 100vw !important;
+  overflow: hidden !important;
 }
 
 /* Custom Utilities & Animations */
@@ -31,7 +42,7 @@ body {
     box-shadow: 0 0 0 1px var(--border), 0 0 8px 0 var(--primary-glow);
   }
 
-  /* The "Breathing" Gradient Animation - FIXED */
+  /* The "Breathing" Gradient Animation */
   .animate-gradient-slow {
     background-size: 200% 200%;
     animation: gradient-move 8s ease infinite;

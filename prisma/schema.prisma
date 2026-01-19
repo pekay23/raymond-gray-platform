@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Inquiry {
@@ -26,6 +26,7 @@ model ArrivalConfirmation {
   longitude Float?
   status    String   @default("CONFIRMED")
 }
+
 enum Role {
   ADMIN
   TECHNICIAN
@@ -38,10 +39,11 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  role          Role      @default(CLIENT)  // Default to CLIENT; admin can change
+  role          Role      @default(CLIENT)
+  password      String?
+
   accounts      Account[]
   sessions      Session[]
-  // Add relations later (e.g., workOrders AssignedTo Technician)
 }
 
 model Account {
@@ -71,7 +73,18 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// Token for Email Verification & Magic Links
 model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Token for Password Resets
+model PasswordResetToken {
+  id         String   @id @default(cuid())
   identifier String
   token      String   @unique
   expires    DateTime
