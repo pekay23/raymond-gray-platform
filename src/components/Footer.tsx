@@ -7,9 +7,9 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12">
         
         {/* Brand & Logo */}
-        <div>
-          {/* LOGO UPDATE: Wrapped in Link */}
-          <Link href="/" className="block relative h-32 w-[600px] max-w-full mb-6 hover:opacity-90 transition cursor-pointer">
+        <div className="col-span-1">
+          {/* LOGO FIX: Removed fixed 600px width. Now it scales naturally. */}
+          <Link href="/" className="block relative h-24 w-full max-w-[280px] mb-6 hover:opacity-90 transition cursor-pointer">
             <Image 
               src="/raymond-gray-logo1.svg" 
               alt="Raymond Gray" 
@@ -17,9 +17,13 @@ export function Footer() {
               className="object-contain object-left"
             />
           </Link>
-          <p className="text-gray-400 leading-relaxed text-sm">
-            Leading provider of integrated facilities management solutions in Ghana.<br />
-            Proactive quality. Seamless possibility.
+          
+          {/* TEXT FIX: Added break-words and adjusted spacing */}
+          <p className="text-gray-400 leading-relaxed text-sm break-words pr-4">
+            Leading provider of integrated facilities management solutions in Ghana.
+            <span className="block mt-2 font-medium text-gray-300">
+              Proactive quality. Seamless possibility.
+            </span>
           </p>
         </div>
         

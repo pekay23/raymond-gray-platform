@@ -36,7 +36,7 @@ export default function About() {
         </motion.div>
       </section>
 
-      {/* 2. WHO WE ARE (Redesigned Content) */}
+      {/* 2. WHO WE ARE */}
       <section className="py-24 bg-white text-slate-900">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-20 items-start">
@@ -74,7 +74,6 @@ export default function About() {
 
               {/* Two Animated Cards */}
               <div className="space-y-6 pt-4">
-                {/* Card 1 */}
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -85,13 +84,12 @@ export default function About() {
                     A premier provider of integrated facility management, building services engineering, and construction finishing solutions.
                   </p>
                 </motion.div>
-
-                {/* Card 2 (Linked Animation) */}
+                
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.2 }} // Staggered reveal
+                  transition={{ delay: 0.2 }}
                   className="bg-slate-900 p-6 rounded-xl border-l-4 border-red-600 shadow-lg text-white"
                 >
                   <p className="text-slate-200 font-medium italic">
@@ -101,19 +99,20 @@ export default function About() {
               </div>
             </motion.div>
 
-            {/* Right Column: Image */}
+            {/* Right Column: Image (FIXED) */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative sticky top-24"
+              className="relative lg:sticky lg:top-24"
             >
-              <div className="relative h-[700px] rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+              {/* FIX: Use aspect ratio instead of fixed height for better mobile display */}
+              <div className="relative w-full aspect-[3/4] md:aspect-[4/5] lg:h-[700px] lg:aspect-auto rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
                 <Image
                   src="/grayteam.jpg"
                   alt="Raymond Gray Team"
                   fill
-                  className="object-cover"
+                  className="object-cover object-top" // Focus on faces (top)
                   quality={100}
                 />
               </div>
@@ -123,7 +122,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* 3. OUR VALUES (Image Cards) */}
+      {/* 3. OUR VALUES */}
       <section className="py-24 bg-slate-50 text-slate-900 border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div 
@@ -137,8 +136,9 @@ export default function About() {
               The principles that drive our operations every single day.
             </p>
           </motion.div>
-
-          <div className="grid md:grid-cols-6 gap-6 h-auto md:h-[600px]">
+          
+          {/* Grid Layout Fixed for Mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-6 md:h-[600px] auto-rows-[300px] md:auto-rows-auto">
             <ValueCard className="md:col-span-2 md:row-span-1" title="Sustainability" desc="Recycling & Renewables." icon={<Leaf />} img="/renewables.jpg" />
             <ValueCard className="md:col-span-2" title="Integrity" desc="Transparent & Reliable." icon={<ShieldCheck />} img="/ifm.jpg" />
             <ValueCard className="md:col-span-2" title="Partnership" desc="Long-term collaboration." icon={<Handshake />} img="/colab.jpg" />
@@ -148,11 +148,11 @@ export default function About() {
         </div>
       </section>
 
-      {/* 4. MISSION & VISION (3D Tilt Effect) */}
+      {/* 4. MISSION & VISION */}
       <section className="relative py-32 bg-slate-950 text-white overflow-hidden perspective-1000">
         <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 to-slate-950 z-0" />
         <div className="absolute inset-0 z-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
-
+        
         <div className="relative z-10 max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12">
           <TiltCard 
             title="Our Mission" 
@@ -181,6 +181,7 @@ function ValueCard({ title, desc, icon, className, img }: { title: string, desc:
     >
       <Image src={img} alt={title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
       <div className="absolute inset-0 bg-black/60 group-hover:bg-black/50 transition-colors" />
+      
       <div className="relative z-10">
         <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-white/20 text-white backdrop-blur-md mx-auto group-hover:bg-red-600 transition-colors">
           <div className="[&>svg]:w-7 [&>svg]:h-7">{icon}</div>

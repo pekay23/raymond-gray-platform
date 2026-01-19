@@ -3,28 +3,50 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { FileText, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { AnalyticsCharts } from "@/components/admin/AnalyticsCharts";
+import { format, subDays } from "date-fns";
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
 
   if (!session || session.user?.role !== "ADMIN") {
-    return (
-      <div className="h-full flex items-center justify-center p-8">
-        <div className="text-center p-8 bg-white rounded-xl shadow-lg border border-red-100 max-w-md">
-          <p className="text-2xl font-bold text-red-600 mb-2">Access Denied</p>
-          <p className="text-slate-600 mb-6">You must be an Administrator to view this page.</p>
-          <Link href="/signin" className="inline-block px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition">Go to Sign In</Link>
-        </div>
-      </div>
-    );
+    return <div>Access Denied</div>;
   }
 
-  // Fetch Real Data
+  // Fetch ALL Inquiries for stats
   const inquiries = await prisma.inquiry.findMany({
     orderBy: { createdAt: 'desc' },
-    take: 50,
   });
 
+  // --- 1. CALCULATE SERVICE DISTRIBUTION ---
+  const serviceCounts: Record<string, number> = {};
+  inquiries.forEach(inq => {
+    // Extract service type from message "[Service: Type]..."
+    const match = inq.message.match(/\[Service: (.*?)\]/);
+    const type = match ? match[1] : "General";
+    serviceCounts[type] = (serviceCounts[type] || 0) + 1;
+  });
+
+  const serviceData = Object.keys(serviceCounts).map(key => ({
+    name: key,
+    value: serviceCounts[key]
+  }));
+
+  // --- 2. CALCULATE TIMELINE (Last 7 Days) ---
+  const timelineData = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = subDays(new Date(), i);
+    const dateStr = format(date, 'MMM dd');
+    
+    // Count inquiries for this day
+    const count = inquiries.filter(inq => 
+      format(new Date(inq.createdAt), 'MMM dd') === dateStr
+    ).length;
+
+    timelineData.push({ date: dateStr, count });
+  }
+
+  // Stats Logic
   const stats = {
     total: inquiries.length,
     emergency: inquiries.filter(i => i.message.includes("Emergency")).length,
@@ -48,6 +70,9 @@ export default async function AdminDashboard() {
         <StatCard title="Audits" value={stats.audit} icon={<CheckCircle className="text-green-600" />} />
         <StatCard title="Servicing" value={stats.servicing} icon={<Clock className="text-amber-600" />} />
       </div>
+
+      {/* Analytics Charts Section */}
+      <AnalyticsCharts timelineData={timelineData} serviceData={serviceData} />
 
       {/* Recent Inquiries Table */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -84,32 +109,22 @@ export default async function AdminDashboard() {
                     {job.message}
                   </td>
                   <td className="p-4 text-right">
-                    {/* Fixed Link to point to user page if needed, or just a dummy view for now */}
-                    <button className="text-blue-600 hover:text-blue-800 font-bold text-xs bg-blue-50 px-3 py-1 rounded-full">
+                    {/* FIXED LINK: Points to /admin/inquiries/[id] */}
+                    <Link href={`/admin/inquiries/${job.id}`} className="inline-block text-blue-600 hover:text-blue-800 font-bold text-xs bg-blue-50 px-3 py-1 rounded-full transition-colors">
                       View
-                    </button>
+                    </Link>
                   </td>
                 </tr>
               ))}
-              
-              {inquiries.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="p-12 text-center text-slate-400">
-                    No inquiries found.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
       </div>
-
     </div>
   );
 }
 
 // --- HELPER COMPONENTS ---
-
 function StatCard({ title, value, icon }: { title: string, value: number, icon: any }) {
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition-shadow">
