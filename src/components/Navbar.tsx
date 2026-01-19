@@ -23,13 +23,12 @@ export function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
-      // FIXED HEIGHT: h-20 (80px)
       className="fixed top-0 left-0 right-0 z-50 bg-[#1E3059]/95 backdrop-blur-md border-b border-white/10 shadow-lg h-20 flex items-center"
     >
       <div className="max-w-7xl w-full mx-auto px-6 flex justify-between items-center h-full">
         
-        {/* LOGO */}
-        <Link href="/" className="relative h-20 w-80 hover:opacity-90 transition">
+        {/* LOGO - Wrapped in Link to Home */}
+        <Link href="/" className="relative h-20 w-80 hover:opacity-90 transition cursor-pointer block">
           <Image 
             src="/raymond-gray-logo1.svg" 
             alt="Raymond Gray" 
@@ -54,7 +53,6 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-
           {/* SIGN IN BUTTON */}
           <Link 
             href="/signin" 

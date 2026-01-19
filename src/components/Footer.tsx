@@ -8,15 +8,15 @@ export function Footer() {
         
         {/* Brand & Logo */}
         <div>
-          {/* LOGO UPDATE: Massive container (h-32 w-[600px]) */}
-          <div className="relative h-32 w-[600px] max-w-full mb-6">
+          {/* LOGO UPDATE: Wrapped in Link */}
+          <Link href="/" className="block relative h-32 w-[600px] max-w-full mb-6 hover:opacity-90 transition cursor-pointer">
             <Image 
               src="/raymond-gray-logo1.svg" 
               alt="Raymond Gray" 
               fill 
               className="object-contain object-left"
             />
-          </div>
+          </Link>
           <p className="text-gray-400 leading-relaxed text-sm">
             Leading provider of integrated facilities management solutions in Ghana.<br />
             Proactive quality. Seamless possibility.
