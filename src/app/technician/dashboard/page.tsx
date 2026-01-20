@@ -2,117 +2,108 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Wrench, MapPin, ClipboardList, LogOut, CheckCircle } from "lucide-react";
+import { ClipboardList, CheckCircle, Clock, Play, MapPin } from "lucide-react";
+import { format } from "date-fns";
 
-export default async function TechnicianDashboard() {
+export default async function TechDashboard() {
   const session = await getServerSession(authOptions);
+  if (!session) return <div>Access Denied</div>;
 
-  if (!session || session.user?.role !== "TECHNICIAN") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-        <div className="text-center p-6">
-          <p className="text-3xl font-bold text-red-500 mb-4">Access Denied</p>
-          <p className="text-xl">Technicians Only.</p>
-          <Link href="/signin" className="mt-6 inline-block bg-blue-600 px-6 py-3 rounded-md font-bold">Sign In</Link>
-        </div>
-      </div>
-    );
-  }
+  // 1. Fetch jobs assigned to THIS technician
+  const assignedJobs = await prisma.inquiry.findMany({
+    where: { 
+      technicianId: session.user.id,
+      status: { in: ["ASSIGNED", "IN_PROGRESS"] } // Only show active jobs
+    },
+    orderBy: { createdAt: "desc" }
+  });
 
-  // Fetch Jobs (Demo: Showing all Emergency jobs for now)
-  const jobs = await prisma.inquiry.findMany({
-    where: { message: { contains: "Emergency" } },
-    orderBy: { createdAt: 'desc' },
-    take: 5,
+  const completedCount = await prisma.inquiry.count({ 
+    where: { 
+      technicianId: session.user.id,
+      status: "RESOLVED" 
+    } 
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pb-24">
-      
-      {/* App Header */}
-      <header className="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 flex justify-between items-center shadow-lg">
-        <div className="flex items-center gap-2">
-          <div className="bg-blue-600 p-1.5 rounded-lg"><Wrench className="text-white w-5 h-5" /></div>
-          <h1 className="font-bold text-lg tracking-wide text-white">RG TECH</h1>
-        </div>
-        <div className="w-9 h-9 bg-slate-800 rounded-full flex items-center justify-center text-xs font-bold border border-slate-700">
-          {session.user.name?.charAt(0) || "T"}
-        </div>
-      </header>
+    <div className="p-4 md:p-8 space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">Technician Dashboard</h1>
+        <p className="text-slate-500">Hello, {session.user.name}</p>
+      </div>
 
-      <main className="p-4 space-y-6">
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <TechStatCard title="Active Jobs" value={assignedJobs.length} icon={<Clock className="text-blue-600" />} />
+        <TechStatCard title="Completed" value={completedCount} icon={<CheckCircle className="text-green-600" />} />
+      </div>
+
+      {/* Assigned Jobs List */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="p-4 border-b border-slate-100 flex justify-between items-center">
+          <h2 className="font-bold text-slate-800">My Assigned Jobs</h2>
+        </div>
         
-        {/* Welcome Card */}
-        <div className="bg-gradient-to-r from-blue-900 to-blue-800 p-6 rounded-2xl border border-blue-700 shadow-lg">
-          <p className="text-blue-200 text-xs font-bold uppercase tracking-wider mb-1">Welcome Back</p>
-          <h2 className="text-2xl font-bold text-white">{session.user.name || "Technician"}</h2>
-          <div className="flex gap-4 mt-4">
-            <div className="bg-blue-950/50 px-4 py-2 rounded-lg text-center border border-blue-500/30">
-              <span className="block text-xl font-bold">{jobs.length}</span>
-              <span className="text-[10px] text-blue-200 uppercase">Active</span>
+        <div className="divide-y divide-slate-100">
+          {assignedJobs.length === 0 ? (
+            <div className="p-12 text-center text-slate-500">
+              <p>No active jobs assigned to you.</p>
             </div>
-            <div className="bg-blue-950/50 px-4 py-2 rounded-lg text-center border border-blue-500/30">
-              <span className="block text-xl font-bold">0</span>
-              <span className="text-[10px] text-blue-200 uppercase">Done</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Job List */}
-        <div>
-          <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-slate-300">
-            <ClipboardList className="w-5 h-5 text-blue-500" /> Today's Jobs
-          </h3>
-          
-          <div className="space-y-4">
-            {jobs.map((job) => (
-              <div key={job.id} className="bg-slate-900 rounded-xl border border-slate-800 p-5 shadow-sm active:scale-95 transition-transform">
-                <div className="flex justify-between items-start mb-3">
-                  <span className="bg-red-900/50 text-red-400 text-xs font-bold px-2 py-1 rounded uppercase">Emergency</span>
-                  <span className="text-slate-500 text-xs">{new Date(job.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                </div>
-                <h4 className="font-bold text-lg text-white mb-1">{job.name}</h4>
-                <p className="text-slate-400 text-sm mb-4 line-clamp-2">{job.message.split('\n')[0]}</p>
+          ) : (
+            assignedJobs.map((job) => (
+              <div key={job.id} className="p-4 hover:bg-slate-50 transition flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
                 
-                <div className="flex gap-2">
-                  <button className="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg text-sm font-bold transition">Start</button>
-                  <button className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition">
-                    <MapPin className="w-5 h-5" />
-                  </button>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide ${
+                      job.status === 'IN_PROGRESS' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                    }`}>
+                      {job.status.replace("_", " ")}
+                    </span>
+                    <span className="text-xs text-slate-400">{format(new Date(job.createdAt), "MMM d, h:mm a")}</span>
+                  </div>
+                  
+                  <h3 className="font-bold text-slate-900 text-lg mb-1">{job.name}</h3>
+                  <p className="text-sm text-slate-600 line-clamp-1 mb-2">{job.message}</p>
+                  
+                  <div className="flex items-center gap-4 text-xs text-slate-500">
+                     <span className="flex items-center gap-1"><MapPin className="w-3 h-3"/> {job.latitude ? "Location Set" : "Accra, GH"}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
 
-            {jobs.length === 0 && (
-              <div className="text-center py-10 text-slate-600">
-                <CheckCircle className="w-12 h-12 mx-auto mb-2 opacity-20" />
-                <p>No active jobs right now.</p>
+                {/* Action Button */}
+                <Link 
+                  href={`/technician/jobs/${job.id}`}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm transition shadow-sm w-full md:w-auto justify-center ${
+                    job.status === 'IN_PROGRESS' 
+                      ? "bg-green-600 text-white hover:bg-green-700" 
+                      : "bg-slate-900 text-white hover:bg-slate-800"
+                  }`}
+                >
+                  {job.status === 'IN_PROGRESS' ? (
+                    <>View Job</>
+                  ) : (
+                    <><Play className="w-4 h-4" /> Start Job</>
+                  )}
+                </Link>
+
               </div>
-            )}
-          </div>
+            ))
+          )}
         </div>
-
-      </main>
-
-      {/* Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 h-16 flex justify-around items-center z-50 shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
-        <NavItem icon={<ClipboardList />} label="Jobs" active />
-        <NavItem icon={<MapPin />} label="Map" />
-        <Link href="/api/auth/signout" className="flex flex-col items-center gap-1 text-slate-500 hover:text-red-500">
-          <LogOut className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Logout</span>
-        </Link>
-      </nav>
-
+      </div>
     </div>
   );
 }
 
-function NavItem({ icon, label, active }: { icon: React.ReactNode, label: string, active?: boolean }) {
+function TechStatCard({ title, value, icon }: any) {
   return (
-    <div className={`flex flex-col items-center gap-1 cursor-pointer ${active ? "text-blue-500" : "text-slate-500"}`}>
-      <div className="w-5 h-5">{icon}</div>
-      <span className="text-[10px] font-medium">{label}</span>
+    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
+      <div className="p-2 bg-slate-50 rounded-lg">{icon}</div>
+      <div>
+        <p className="text-xs text-slate-500 uppercase font-bold">{title}</p>
+        <p className="text-xl font-bold text-slate-900">{value}</p>
+      </div>
     </div>
   );
 }

@@ -14,8 +14,21 @@ model Inquiry {
   email     String
   phone     String?
   message   String
-  status    String   @default("PENDING")
   createdAt DateTime @default(now())
+  
+  // JOB TRACKING FIELDS
+  status       String    @default("PENDING") // PENDING, ASSIGNED, IN_PROGRESS, RESOLVED
+  
+  // Assignment Relation
+  technicianId String?   
+  technician   User?     @relation("TechJobs", fields: [technicianId], references: [id])
+  
+  // Workflow Fields
+  latitude     Float?
+  longitude    Float?
+  startCode    String?   // Secure 4-digit code for verification
+  startedAt    DateTime?
+  completedAt  DateTime?
 }
 
 model ArrivalConfirmation {
@@ -45,6 +58,9 @@ model User {
 
   accounts      Account[]
   sessions      Session[]
+  
+  // Relation to jobs assigned to this user (if they are a technician)
+  assignedJobs  Inquiry[] @relation("TechJobs")
 }
 
 model Account {
