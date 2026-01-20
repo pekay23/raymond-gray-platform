@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Trash2, UserPlus, Shield, User, Wrench, Loader2, Search } from "lucide-react";
+import { toast } from "sonner"; // Import toast
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -13,10 +14,14 @@ export default function AdminUsersPage() {
   const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "CLIENT" });
 
   const fetchUsers = async () => {
-    const res = await fetch("/api/admin/users");
-    if (res.ok) {
-      const data = await res.json();
-      setUsers(data);
+    try {
+      const res = await fetch("/api/admin/users");
+      if (res.ok) {
+        const data = await res.json();
+        setUsers(data);
+      }
+    } catch (e) {
+      console.error(e);
     }
     setIsLoading(false);
   };
@@ -26,9 +31,16 @@ export default function AdminUsersPage() {
   }, []);
 
   const handleDelete = async (id: string) => {
+    // Optional: You could replace this native confirm with a toast action, but native is safer for deletes.
     if (!confirm("Are you sure you want to delete this user?")) return;
-    await fetch(`/api/admin/users?id=${id}`, { method: "DELETE" });
-    fetchUsers(); // Refresh list
+    
+    const res = await fetch(`/api/admin/users?id=${id}`, { method: "DELETE" });
+    if (res.ok) {
+      fetchUsers(); // Refresh list
+      toast.success("User deleted successfully");
+    } else {
+      toast.error("Failed to delete user");
+    }
   };
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -43,8 +55,9 @@ export default function AdminUsersPage() {
       setShowForm(false);
       setFormData({ name: "", email: "", password: "", role: "CLIENT" });
       fetchUsers();
+      toast.success("User created successfully");
     } else {
-      alert("Failed to create user (Email likely exists)");
+      toast.error("Failed to create user (Email likely exists)");
     }
   };
 

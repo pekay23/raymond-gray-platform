@@ -22,6 +22,7 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
+      
       {/* TOP NAVIGATION */}
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -68,21 +69,37 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
         </div>
 
         {/* CARD CONTENT */}
-        <div className="p-6 md:p-8 grid gap-8">
+        <div className="p-6 md:p-8 flex flex-col gap-8">
+          
+          {/* Contact Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <InfoBox icon={<Mail />} label="Email Address" value={inquiry.email} href={`mailto:${inquiry.email}`} />
-            <InfoBox icon={<Phone />} label="Phone Number" value={inquiry.phone || "N/A"} href={inquiry.phone ? `tel:${inquiry.phone}` : undefined} />
+            <InfoBox 
+              icon={<Mail />} 
+              label="Email Address" 
+              value={inquiry.email} 
+              href={`mailto:${inquiry.email}`} 
+            />
+            <InfoBox 
+              icon={<Phone />} 
+              label="Phone Number" 
+              value={inquiry.phone || "N/A"} 
+              href={inquiry.phone ? `tel:${inquiry.phone}` : undefined} 
+            />
           </div>
 
-                    {/* Message Content */}
-          <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
+          {/* Message Content - Fixed for Mobile Wrapping */}
+          <div className="bg-slate-50 p-4 md:p-6 rounded-xl border border-slate-100 w-full">
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
               <MessageSquare className="w-4 h-4" /> Message Content
             </h3>
-            <p className="text-slate-800 text-base md:text-lg leading-relaxed whitespace-pre-wrap break-words">
-              {inquiry.message}
-            </p>
+            
+            <div className="w-full overflow-hidden">
+              <p className="text-slate-800 text-sm md:text-lg leading-relaxed whitespace-pre-wrap break-words break-all">
+                {inquiry.message}
+              </p>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -93,14 +110,19 @@ function InfoBox({ icon, label, value, href }: any) {
   return (
     <div className="flex items-start gap-4 p-4 rounded-lg border border-slate-100 md:border-none">
       <div className="mt-1 text-slate-400 shrink-0">{icon}</div>
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 overflow-hidden">
         <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{label}</p>
+        
         {href ? (
-          <a href={href} className="text-base md:text-lg font-medium text-blue-600 hover:underline block break-all">
+          <a 
+            href={href} 
+            className="text-base md:text-lg font-medium text-blue-600 hover:underline block truncate"
+            title={value} // Show full text on hover if truncated
+          >
             {value}
           </a>
         ) : (
-          <p className="text-base md:text-lg font-medium text-slate-900 break-all">{value}</p>
+          <p className="text-base md:text-lg font-medium text-slate-900 break-words">{value}</p>
         )}
       </div>
     </div>

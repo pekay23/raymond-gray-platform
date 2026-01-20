@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner"; // Using toast instead of alert
 
 export function StatusToggle({ id, initialStatus }: { id: number, initialStatus: string }) {
-  const [status, setStatus] = useState(initialStatus || "PENDING"); // Default fallback
+  const [status, setStatus] = useState(initialStatus || "PENDING");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -23,9 +24,12 @@ export function StatusToggle({ id, initialStatus }: { id: number, initialStatus:
       if (res.ok) {
         setStatus(newStatus);
         router.refresh();
+        toast.success(`Inquiry marked as ${newStatus}`);
+      } else {
+        toast.error("Failed to update status");
       }
     } catch (error) {
-      alert("Failed to update status");
+      toast.error("Network error while updating status");
     }
     setIsLoading(false);
   };

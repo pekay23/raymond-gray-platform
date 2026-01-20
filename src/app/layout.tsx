@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "@/components/Providers"; // Keeps the clean wrapper
+import { Providers } from "@/components/Providers";
+import { Toaster } from "sonner"; // Import Toaster
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,9 +30,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-white text-gray-900 antialiased`}>
-        {/* Navbar & Footer logic moved inside here */}
         <Providers>
           {children}
+          {/* TOASTER ADDED: Positioned top-center for visibility */}
+          <Toaster position="top-center" richColors />
         </Providers>
       </body>
     </html>

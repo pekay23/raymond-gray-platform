@@ -4,12 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner"; // Import toast
 
 export default function SignUp() {
   const router = useRouter();
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Added loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,15 +25,19 @@ export default function SignUp() {
       });
 
       if (res.ok) {
-        // Redirect to login with a success flag
+        toast.success("Account created successfully! Redirecting...");
         router.push("/signin?registered=true");
       } else {
         const data = await res.json();
-        setError(data.message || "Something went wrong");
+        const msg = data.message || "Something went wrong";
+        setError(msg);
+        toast.error(msg);
         setIsLoading(false);
       }
     } catch (err) {
-      setError("Failed to connect to server");
+      const msg = "Failed to connect to server";
+      setError(msg);
+      toast.error(msg);
       setIsLoading(false);
     }
   };
