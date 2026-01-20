@@ -133,7 +133,11 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
               <p className="text-sm text-slate-500 mb-4 italic">No technician assigned yet.</p>
             )}
 
-            <AssignTech inquiryId={inquiry.id} currentTechId={inquiry.technicianId} />
+            <AssignTech 
+              inquiryId={inquiry.id} 
+              currentTechId={inquiry.technicianId} 
+              status={inquiry.status} // <--- Pass status
+            />
           </div>
         </div>
 

@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen flex bg-slate-50 relative">
       
-      {/* MOBILE HEADER (Visible on small screens) */}
+      {/* MOBILE HEADER */}
       <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-slate-900 text-white flex items-center justify-between px-4 z-50 shadow-md">
         <Link href="/" className="font-bold text-lg tracking-tight">
           Raymond Gray<span className="text-red-500">.</span>
@@ -26,7 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </button>
       </header>
 
-      {/* OVERLAY (Closes sidebar when clicked) */}
+      {/* OVERLAY */}
       {isSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -47,13 +47,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </Link>
             <p className="text-slate-500 text-xs uppercase tracking-widest mt-1 hidden lg:block">Admin Portal</p>
           </div>
-          {/* Close button for mobile inside sidebar */}
           <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden p-1 text-slate-400">
             <X className="w-5 h-5" />
           </button>
         </div>
         
-        <nav className="p-4 space-y-2 overflow-y-auto max-h-[calc(100vh-140px)]">
+        {/* ADDED 'no-scrollbar' HERE */}
+        <nav className="p-4 space-y-2 overflow-y-auto max-h-[calc(100vh-140px)] no-scrollbar">
           <NavLink href="/" icon={<Home />} label="Back to Website" active={false} onClick={() => setIsSidebarOpen(false)} />
           <div className="h-px bg-slate-800 my-2 mx-4" />
           <NavLink href="/admin/dashboard" icon={<LayoutDashboard />} label="Dashboard" active={pathname === '/admin/dashboard'} onClick={() => setIsSidebarOpen(false)} />
@@ -77,7 +77,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* MAIN CONTENT */}
-      {/* Added pt-16 on mobile to account for the header */}
       <main className="flex-1 w-full pt-16 lg:pt-0 overflow-x-hidden">
         {children}
       </main>

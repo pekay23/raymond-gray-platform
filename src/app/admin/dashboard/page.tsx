@@ -3,51 +3,45 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { FileText, AlertCircle, CheckCircle, Clock } from "lucide-react";
-import { AnalyticsCharts } from "@/components/admin/AnalyticsCharts"; // Import the charts
+import { AnalyticsCharts } from "@/components/admin/AnalyticsCharts";
+import { ActiveJobsList } from "@/components/admin/ActiveJobsList"; // Import new component
 import { format, subDays } from "date-fns";
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
 
   if (!session || session.user?.role !== "ADMIN") {
-    // ... access denied code ...
     return <div>Access Denied</div>;
   }
 
-  // Fetch ALL Inquiries for stats
+  // Fetch ALL Inquiries (Include Technician data now)
   const inquiries = await prisma.inquiry.findMany({
     orderBy: { createdAt: 'desc' },
+    include: { technician: true }, // <--- CRITICAL: Fetch tech info
   });
 
+  // Filter ACTIVE jobs
+  const activeJobs = inquiries.filter(i => i.status === "IN_PROGRESS");
+
+  // ... (Keep existing stats/charts logic) ...
   // --- 1. CALCULATE SERVICE DISTRIBUTION ---
   const serviceCounts: Record<string, number> = {};
   inquiries.forEach(inq => {
-    // Extract service type from message "[Service: Type]..."
     const match = inq.message.match(/\[Service: (.*?)\]/);
     const type = match ? match[1] : "General";
     serviceCounts[type] = (serviceCounts[type] || 0) + 1;
   });
+  const serviceData = Object.keys(serviceCounts).map(key => ({ name: key, value: serviceCounts[key] }));
 
-  const serviceData = Object.keys(serviceCounts).map(key => ({
-    name: key,
-    value: serviceCounts[key]
-  }));
-
-  // --- 2. CALCULATE TIMELINE (Last 7 Days) ---
+  // --- 2. CALCULATE TIMELINE ---
   const timelineData = [];
   for (let i = 6; i >= 0; i--) {
     const date = subDays(new Date(), i);
     const dateStr = format(date, 'MMM dd');
-    
-    // Count inquiries for this day
-    const count = inquiries.filter(inq => 
-      format(new Date(inq.createdAt), 'MMM dd') === dateStr
-    ).length;
-
+    const count = inquiries.filter(inq => format(new Date(inq.createdAt), 'MMM dd') === dateStr).length;
     timelineData.push({ date: dateStr, count });
   }
 
-  // Stats Logic
   const stats = {
     total: inquiries.length,
     emergency: inquiries.filter(i => i.message.includes("Emergency")).length,
@@ -57,14 +51,12 @@ export default async function AdminDashboard() {
 
   return (
     <div className="p-8 space-y-8">
-      
-      {/* Welcome Header */}
+      {/* Header & Stats ... (Keep as is) */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900">Dashboard Overview</h1>
         <p className="text-slate-500">Welcome back, {session.user.name}</p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard title="Total Requests" value={stats.total} icon={<FileText className="text-blue-600" />} />
         <StatCard title="Emergency" value={stats.emergency} icon={<AlertCircle className="text-red-600" />} />
@@ -72,17 +64,28 @@ export default async function AdminDashboard() {
         <StatCard title="Servicing" value={stats.servicing} icon={<Clock className="text-amber-600" />} />
       </div>
 
-      {/* Analytics Charts Section */}
-      <AnalyticsCharts timelineData={timelineData} serviceData={serviceData} />
+      {/* GRID LAYOUT: Charts + Live Ops */}
+      <div className="grid lg:grid-cols-3 gap-8">
+        
+        {/* Left: Charts (Span 2 cols) */}
+        <div className="lg:col-span-2">
+           <AnalyticsCharts timelineData={timelineData} serviceData={serviceData} />
+        </div>
 
-      {/* Recent Inquiries Table */}
+        {/* Right: Live Operations (Span 1 col) */}
+        <div className="lg:col-span-1">
+           <ActiveJobsList jobs={activeJobs} />
+        </div>
+
+      </div>
+
+      {/* Recent Inquiries Table ... (Keep existing table code below) */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-6 border-b border-slate-100 flex justify-between items-center">
           <h2 className="text-lg font-bold text-slate-800">Recent Inquiries</h2>
           <Link href="/admin/inquiries" className="text-sm text-blue-600 hover:underline font-medium">View All</Link>
         </div>
         
-        {/* ADDED: no-scrollbar class to hide scrollbar but allow swipe */}
         <div className="overflow-x-auto no-scrollbar">
           <table className="w-full text-left text-sm min-w-[800px]">
             <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider border-b border-slate-200">
@@ -108,7 +111,6 @@ export default async function AdminDashboard() {
                     <ServiceBadge message={job.message} />
                   </td>
                   <td className="p-4 text-slate-600 align-top">
-                    {/* ADDED: line-clamp-2 to prevent huge height */}
                     <div className="line-clamp-2 max-w-sm" title={job.message}>
                       {job.message}
                     </div>
@@ -120,14 +122,6 @@ export default async function AdminDashboard() {
                   </td>
                 </tr>
               ))}
-              
-              {inquiries.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="p-12 text-center text-slate-400">
-                    No inquiries found.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
@@ -136,8 +130,7 @@ export default async function AdminDashboard() {
   );
 }
 
-// --- HELPER COMPONENTS ---
-
+// ... (Keep existing Helper Components StatCard, ServiceBadge) ...
 function StatCard({ title, value, icon }: { title: string, value: number, icon: any }) {
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition-shadow">
