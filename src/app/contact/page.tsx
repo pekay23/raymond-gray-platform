@@ -21,23 +21,26 @@ export default function Contact() {
     e.preventDefault();
     setStatus("loading");
     
-    // Simulate API call or replace with actual endpoint
     try {
-      // Simulating a successful request for now
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // For real implementation:
-      /* 
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      if (!res.ok) throw new Error();
-      */
 
-      setStatus("success");
-      setFormData({ name: "", email: "", phone: "", serviceType: "General Inquiry", message: "" });
+      if (res.ok) {
+        setStatus("success");
+        setFormData({ 
+          name: "", 
+          email: "", 
+          phone: "", 
+          address: "", 
+          serviceType: "General Inquiry", 
+          message: "" 
+        });
+      } else {
+        setStatus("error");
+      }
     } catch (error) {
       setStatus("error");
     }
@@ -136,7 +139,7 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* RIGHT: High Contrast Form */}
+          {/* RIGHT: High Contrast Form (ABM Style) */}
           <div className="lg:col-span-8">
             <div className="bg-slate-50 p-8 md:p-12 rounded-2xl border border-slate-200 shadow-sm">
               

@@ -5,15 +5,10 @@ import { Facebook, Instagram, Twitter, Linkedin, Phone, Mail } from "lucide-reac
 export function Footer() {
   return (
     <footer className="bg-slate-900 text-white py-12 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-8 md:gap-12">
+      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-8 lg:gap-12">
         
-        {/* Brand & Logo */}
-        <div className="col-span-1 flex flex-col items-start">
-          
-          {/* LOGO ALIGNMENT FIX: 
-              -mt-14 pulls the image up drastically so the text inside aligns with "Company".
-              h-32 ensures the image is large enough to be legible.
-          */}
+        {/* Brand & Logo (Span 4 cols) */}
+        <div className="md:col-span-4 flex flex-col items-start">
           <Link href="/" className="block relative h-32 w-64 -ml-3 -mt-14 mb-0 hover:opacity-90 transition cursor-pointer">
             <Image 
               src="/raymond-gray-logo1.svg" 
@@ -23,7 +18,6 @@ export function Footer() {
             />
           </Link>
           
-          {/* Text needs -mt-6 to close the gap left by the cropped logo image */}
           <p className="text-gray-400 text-xs leading-relaxed max-w-xs mb-4 -mt-6">
             Leading provider of integrated facilities management solutions in Ghana.
             <span className="block mt-1 font-medium text-gray-300">
@@ -39,8 +33,8 @@ export function Footer() {
           </div>
         </div>
         
-        {/* Quick Links */}
-        <div className="mt-1"> {/* Added tiny top margin to align text baseline if needed */}
+        {/* Quick Links (Span 2 cols) */}
+        <div className="md:col-span-2 mt-1">
           <h4 className="text-sm font-bold mb-4 text-white uppercase tracking-wider">Company</h4>
           <ul className="space-y-2 text-gray-400 text-xs">
             <li><Link href="/" className="hover:text-red-500 transition">Home</Link></li>
@@ -51,8 +45,8 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Portals */}
-        <div className="mt-1">
+        {/* Portals (Span 2 cols) */}
+        <div className="md:col-span-2 mt-1">
           <h4 className="text-sm font-bold mb-4 text-white uppercase tracking-wider">Portals</h4>
           <ul className="space-y-2 text-gray-400 text-xs">
             <li><Link href="/client/dashboard" className="hover:text-blue-400 transition">Client Portal</Link></li>
@@ -61,22 +55,22 @@ export function Footer() {
           </ul>
         </div>
         
-        {/* Contact Info */}
-        <div className="mt-1">
+        {/* Contact Info (Span 4 cols - Wider for emails!) */}
+        <div className="md:col-span-4 mt-1">
           <h4 className="text-sm font-bold mb-4 text-white uppercase tracking-wider">Contact</h4>
           <ul className="space-y-3 text-gray-400 text-xs">
             <li className="leading-relaxed">
               Accra, Greater Accra Region<br />Ghana
             </li>
             <li className="flex items-center gap-2">
-              <Phone className="w-3 h-3 text-red-500" />
-              <a href="tel:+233551010108" className="hover:text-white transition">+233 551 010 108</a>
+              <Phone className="w-3 h-3 text-red-500 flex-shrink-0" />
+              <a href="tel:+233551010108" className="hover:text-white transition whitespace-nowrap">+233 551 010 108</a>
             </li>
             <li className="flex items-start gap-2">
-              <Mail className="w-3 h-3 text-red-500 mt-0.5" />
+              <Mail className="w-3 h-3 text-red-500 mt-0.5 flex-shrink-0" />
               <div className="flex flex-col">
-                <a href="mailto:contactus@raymond-gray.org" className="hover:text-white transition">contactus@raymond-gray.org</a>
-                <a href="mailto:repairs@raymond-gray.org" className="hover:text-white transition">repairs@raymond-gray.org</a>
+                <a href="mailto:contactus@raymond-gray.org" className="hover:text-white transition whitespace-nowrap">contactus@raymond-gray.org</a>
+                <a href="mailto:repairs@raymond-gray.org" className="hover:text-white transition whitespace-nowrap">repairs@raymond-gray.org</a>
               </div>
             </li>
           </ul>
