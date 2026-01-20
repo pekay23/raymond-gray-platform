@@ -1,30 +1,29 @@
 "use client";
 
 import { signIn, getSession } from "next-auth/react";
-import { useState, Suspense, useEffect } from "react"; // Added useEffect
+import { useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Loader2, AlertCircle, ArrowLeft, Lock, Mail, CheckCircle } from "lucide-react"; // Added CheckCircle
+import { Loader2, AlertCircle, ArrowLeft, Lock, Mail, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner"; // Import toast
 
 function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(""); // Added success state
   
   const router = useRouter();
   const searchParams = useSearchParams();
   
   const callbackUrl = searchParams.get("callbackUrl");
-  const registered = searchParams.get("registered"); // Check for param
+  const registered = searchParams.get("registered");
 
-  // Show success message if redirected from signup
   useEffect(() => {
     if (registered) {
-      setSuccess("Account created successfully! Please sign in.");
+      toast.success("Account created! Please sign in.");
     }
   }, [registered]);
 
@@ -32,7 +31,6 @@ function SignInForm() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    setSuccess(""); // Clear success message on try
 
     // 1. Sign In
     const result = await signIn("credentials", { 
@@ -42,13 +40,19 @@ function SignInForm() {
     });
 
     if (result?.ok) {
-      // 2. Redirect logic...
+      toast.success("Signed in successfully");
+      
+      // --- CRITICAL FIX START ---
+      // Force a router refresh to ensure Middleware sees the new cookie
+      router.refresh(); 
+
+      // 2. Redirect Logic
       if (callbackUrl) {
         router.push(callbackUrl);
-        router.refresh();
         return;
       }
 
+      // Fetch session to determine role
       const session = await getSession();
       const role = session?.user?.role;
 
@@ -59,8 +63,8 @@ function SignInForm() {
       } else {
         router.push("/client/dashboard");
       }
+      // --- CRITICAL FIX END ---
       
-      router.refresh();
     } else {
       setError("Invalid credentials. Please try again.");
       setIsLoading(false);
@@ -74,7 +78,6 @@ function SignInForm() {
         <p className="text-slate-500 text-sm">Sign in to access your portal</p>
       </div>
 
-      {/* ERROR MESSAGE */}
       {error && (
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
@@ -83,18 +86,6 @@ function SignInForm() {
         >
           <AlertCircle className="w-5 h-5 shrink-0" />
           {error}
-        </motion.div>
-      )}
-
-      {/* SUCCESS MESSAGE */}
-      {success && (
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-green-50 text-green-700 p-4 rounded-lg mb-6 flex items-center gap-3 text-sm font-medium border border-green-100"
-        >
-          <CheckCircle className="w-5 h-5 shrink-0" />
-          {success}
         </motion.div>
       )}
 
@@ -170,6 +161,8 @@ function SignInForm() {
 export default function SignIn() {
   return (
     <div className="min-h-screen flex bg-slate-50">
+      
+      {/* Left Side - Image/Brand */}
       <div className="hidden lg:flex w-1/2 relative bg-slate-900 overflow-hidden items-center justify-center">
         <Image 
           src="/hero-home.jpg" 
@@ -179,6 +172,7 @@ export default function SignIn() {
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-900/80 to-blue-900/40" />
+        
         <div className="relative z-10 text-white p-12 max-w-lg">
           <div className="w-16 h-1 bg-blue-500 mb-6" />
           <h1 className="text-4xl font-bold mb-4 leading-tight">Professional Facility Management</h1>
@@ -188,11 +182,13 @@ export default function SignIn() {
         </div>
       </div>
 
+      {/* Right Side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 pt-24 lg:pt-6">
         <Suspense fallback={<div className="text-slate-500">Loading form...</div>}>
           <SignInForm />
         </Suspense>
       </div>
+
     </div>
   );
 }
