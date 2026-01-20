@@ -16,20 +16,18 @@ export default withAuth(
       return NextResponse.redirect(new URL("/signin", req.url));
     }
 
-    // 3. Protect Client Routes (Optional: if you want strict role separation)
-    // If you want Admins to be able to see Client views, remove the second check.
+    // 3. Protect Client Routes (Clients & Admins allowed)
     if (path.startsWith("/client") && token?.role !== "CLIENT" && token?.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/signin", req.url));
     }
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token, // Only allow if logged in
+      authorized: ({ token }) => !!token, // User must be logged in
     },
   }
 );
 
-// Define which paths this middleware runs on
 export const config = {
   matcher: [
     "/admin/:path*",

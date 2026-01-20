@@ -29,3 +29,26 @@ export async function PATCH(
     return NextResponse.json({ error: "Failed to update inquiry" }, { status: 500 });
   }
 }
+export async function DELETE(
+  req: Request, 
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getServerSession(authOptions);
+  
+  if (session?.user?.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = await params;
+  const inquiryId = parseInt(id);
+
+  try {
+    await prisma.inquiry.delete({
+      where: { id: inquiryId },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to delete inquiry" }, { status: 500 });
+  }
+}

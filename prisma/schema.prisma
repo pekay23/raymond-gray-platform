@@ -26,7 +26,8 @@ model Inquiry {
   // Workflow Fields
   latitude     Float?
   longitude    Float?
-  startCode    String?   // Secure 4-digit code for verification
+  startCode    String?   // Secure 4-digit code to START
+  endCode      String?   // Secure 4-digit code to FINISH (New)
   startedAt    DateTime?
   completedAt  DateTime?
 }

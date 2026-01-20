@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Phone, Play, CheckCircle, ArrowLeft } from "lucide-react";
 import { StartJobForm } from "@/components/technician/StartJobForm";
+import { CompleteJobForm } from "@/components/technician/CompleteJobForm"; // Imported!
 import Link from "next/link";
 
 export default async function JobPage({ params }: { params: Promise<{ id: string }> }) {
@@ -13,7 +14,7 @@ export default async function JobPage({ params }: { params: Promise<{ id: string
   const job = await prisma.inquiry.findUnique({ where: { id: jobId } });
   
   // DEBUGGING: Remove this line in production
-  console.log("Job Tech ID:", job?.technicianId, "Session User ID:", session?.user?.id);
+  // console.log("Job Tech ID:", job?.technicianId, "Session User ID:", session?.user?.id);
 
   if (!job) return <div className="p-8">Job Not Found</div>;
 
@@ -62,23 +63,40 @@ export default async function JobPage({ params }: { params: Promise<{ id: string
           </div>
 
           <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-xl">
-            {/* Show "Start Job" if ASSIGNED, or "Job in Progress" if IN_PROGRESS */}
+            {/* 1. ASSIGNED: Show Start Form */}
             {job.status === "ASSIGNED" ? (
               <>
                 <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
                   <Play className="w-5 h-5 text-green-400"/> Start Job
                 </h3>
-                <p className="text-slate-400 text-sm mb-6">Ask client for the 4-digit code to begin.</p>
+                <p className="text-slate-400 text-sm mb-6">Ask client for the 4-digit START code.</p>
                 <StartJobForm jobId={job.id} />
               </>
+            ) : job.status === "IN_PROGRESS" ? (
+              /* 2. IN PROGRESS: Show Complete Form */
+              <>
+                <div className="text-center mb-6">
+                  <p className="text-green-400 font-bold text-lg animate-pulse">JOB IN PROGRESS</p>
+                  <p className="text-slate-400 text-xs">
+                    Started: {job.startedAt ? new Date(job.startedAt).toLocaleTimeString() : 'Just now'}
+                  </p>
+                </div>
+                
+                <div className="border-t border-slate-700 pt-6">
+                  <h3 className="font-bold text-lg mb-2 text-white">Finish Job</h3>
+                  <p className="text-slate-400 text-sm mb-4">Work done? Ask client for the 4-digit COMPLETION code.</p>
+                  <CompleteJobForm jobId={job.id} />
+                </div>
+              </>
             ) : (
+              /* 3. RESOLVED: Show Success */
               <div className="text-center py-4">
                 <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
                   <CheckCircle className="w-8 h-8 text-green-500"/>
                 </div>
-                <p className="font-bold text-xl text-green-400">Job In Progress</p>
+                <p className="font-bold text-xl text-green-400">Job Completed</p>
                 <p className="text-slate-400 text-sm mt-1">
-                    {job.startedAt ? `Timer started at ${job.startedAt.toLocaleTimeString()}` : "Timer Running"}
+                    {job.completedAt ? `Finished at ${new Date(job.completedAt).toLocaleString()}` : "Job Done"}
                 </p>
               </div>
             )}

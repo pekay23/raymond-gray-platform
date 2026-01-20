@@ -7,8 +7,11 @@ import { format } from "date-fns";
 
 export default async function TechDashboard() {
   const session = await getServerSession(authOptions);
-  if (!session) return <div>Access Denied</div>;
-
+  
+  // 🔒 STRICT ROLE CHECK
+  if (!session || session.user.role !== "TECHNICIAN") {
+    return <div className="p-8 text-center text-red-600 font-bold">Access Denied: Technicians Only</div>;
+  }
   // 1. Fetch jobs assigned to THIS technician
   const assignedJobs = await prisma.inquiry.findMany({
     where: { 
