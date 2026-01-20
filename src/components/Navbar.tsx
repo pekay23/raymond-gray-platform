@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { User } from "lucide-react";
+import { User, Menu, X } from "lucide-react";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,19 +27,19 @@ export function Navbar() {
     >
       <div className="max-w-7xl w-full mx-auto px-6 flex justify-between items-center h-full">
         
-        {/* LOGO - Wrapped in Link to Home */}
-        <Link href="/" className="relative h-20 w-80 hover:opacity-90 transition cursor-pointer block">
+        {/* LOGO FIX: Huge container with negative margins to crop empty space */}
+        <Link href="/" className="relative block h-40 w-64 -ml-4 flex-shrink-0 hover:opacity-90 transition">
           <Image 
             src="/raymond-gray-logo1.svg" 
             alt="Raymond Gray" 
             fill 
-            className="object-contain object-left"
+            className="object-contain object-left" 
             priority
           />
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center space-x-8 text-lg font-medium">
+        <div className="hidden md:flex items-center space-x-8 text-base font-medium">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -56,7 +56,7 @@ export function Navbar() {
           {/* SIGN IN BUTTON */}
           <Link 
             href="/signin" 
-            className="flex items-center gap-2 px-5 py-2 bg-white text-[#1E3059] rounded-lg text-sm font-bold hover:bg-gray-100 transition shadow-md"
+            className="flex items-center gap-2 px-5 py-2.5 bg-white text-[#1E3059] rounded-lg text-sm font-bold hover:bg-gray-100 transition shadow-sm"
           >
             <User className="w-4 h-4" /> Sign In
           </Link>
@@ -65,11 +65,9 @@ export function Navbar() {
         {/* Mobile Hamburger */}
         <button 
           onClick={() => setIsOpen(!isOpen)} 
-          className="md:hidden text-white focus:outline-none"
+          className="md:hidden text-white focus:outline-none p-2"
         >
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-          </svg>
+          {isOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
         </button>
       </div>
 
@@ -83,7 +81,7 @@ export function Navbar() {
             transition={{ duration: 0.3 }}
             className="md:hidden bg-[#1E3059] border-t border-white/10 shadow-xl absolute top-20 left-0 right-0"
           >
-            <div className="px-6 py-4 space-y-4 text-lg font-medium">
+            <div className="px-6 py-6 space-y-4 text-lg font-medium">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
