@@ -10,6 +10,7 @@ export default function Contact() {
     name: "",
     email: "",
     phone: "",
+    address: "",
     serviceType: "General Inquiry",
     message: "",
   });
@@ -158,6 +159,16 @@ export default function Contact() {
                     <InputGroup label="Full Name *" name="name" placeholder="Enter your name" value={formData.name} onChange={handleChange} required />
                     <InputGroup label="Phone Number" name="phone" placeholder="+233..." value={formData.phone} onChange={handleChange} />
                   </div>
+
+                  {/* NEW ADDRESS INPUT */}
+                  <InputGroup 
+                    label="Location / Digital Address *" 
+                    name="address" 
+                    placeholder="e.g. GA-123-4567, East Legon" 
+                    value={formData.address} 
+                    onChange={handleChange} 
+                    required 
+                  />
 
                   <InputGroup label="Email Address *" name="email" type="email" placeholder="name@company.com" value={formData.email} onChange={handleChange} required />
 
