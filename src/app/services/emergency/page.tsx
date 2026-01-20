@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Loader2, Zap, MapPin, Clock, ShieldCheck, CheckCircle2, AlertTriangle, MessageCircle, Calendar } from "lucide-react";
+import { Loader2, Zap, ShieldCheck, CheckCircle2, MessageCircle, Calendar, MapPin, AlertCircle, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,11 +22,8 @@ export default function EmergencyRepairPage() {
     email: "",
     agreed: false
   });
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
-  // --- ARRIVAL STATE (NEW) ---
-  const [arrivalData, setArrivalData] = useState({ workOrder: "", code: "" });
-  const [arrivalStatus, setArrivalStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -63,44 +60,6 @@ export default function EmergencyRepairPage() {
     }
   };
 
-  // --- ARRIVAL CONFIRMATION SUBMIT (NEW) ---
-  const handleArrivalConfirm = async () => {
-    if (!arrivalData.workOrder || !arrivalData.code) {
-      alert("Please enter both Work Order and Arrival Code");
-      return;
-    }
-    setArrivalStatus("loading");
-
-    // Get GPS Location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-        sendArrivalData(latitude, longitude);
-      }, (error) => {
-        console.error("GPS Error", error);
-        alert("GPS Location is required to confirm arrival. Please allow location access.");
-        setArrivalStatus("idle");
-      });
-    } else {
-      alert("GPS not supported on this browser.");
-      setArrivalStatus("idle");
-    }
-  };
-
-  const sendArrivalData = async (lat: number, lng: number) => {
-    try {
-      const res = await fetch("/api/confirm-arrival", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...arrivalData, latitude: lat, longitude: lng }),
-      });
-      if (res.ok) setArrivalStatus("success");
-      else setArrivalStatus("error");
-    } catch (error) {
-      setArrivalStatus("error");
-    }
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const value = e.target.type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value;
     setFormData({ ...formData, [e.target.name]: value });
@@ -131,7 +90,6 @@ export default function EmergencyRepairPage() {
             >
               <Zap className="w-5 h-5" /> Book Emergency Repair
             </button>
-
             <Link href="/services/scheduled" className="inline-flex items-center gap-2 bg-slate-800/80 px-6 py-4 rounded-full border border-slate-700 shadow-xl backdrop-blur-sm hover:bg-slate-700/80 transition text-sm">
               <Calendar className="w-4 h-4 text-blue-400" />
               <span className="font-medium text-slate-300">Not urgent? Try Scheduled (3–5 days) →</span>
@@ -202,7 +160,6 @@ export default function EmergencyRepairPage() {
               We stand behind our work. If a covered issue recurs within 60 days, we return to fix it for free.
             </p>
           </div>
-
         </div>
 
         {/* RIGHT COLUMN: Booking Form (7 cols) */}
@@ -266,7 +223,7 @@ export default function EmergencyRepairPage() {
 
                 {/* 5. Description */}
                 <div className="w-full">
-                  <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide text-xs">5. Repair Description</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">5. Repair Description</label>
                   <textarea 
                     name="description" 
                     rows={3} 
@@ -320,58 +277,13 @@ export default function EmergencyRepairPage() {
                   >
                     {status === "loading" ? <Loader2 className="animate-spin" /> : "Confirm & Pay Call-Out"}
                   </button>
-
                   <a href="https://wa.me/233551010108" target="_blank" className="w-full py-3 border-2 border-green-600 text-green-700 font-bold rounded-xl transition-all flex items-center justify-center gap-2 hover:bg-green-50">
                     <MessageCircle className="w-5 h-5" /> Request via WhatsApp
                   </a>
                 </div>
-
               </form>
             )}
           </div>
-
-          {/* ARRIVAL CONFIRMATION BOX (WORKING) */}
-          <div className="mt-8 bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-            <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <MapPin className="text-red-600" /> Confirm Technician Arrival
-            </h3>
-            
-            {arrivalStatus === "success" ? (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-center">
-                <CheckCircle2 className="w-8 h-8 mx-auto mb-2" />
-                <p className="font-bold">Arrival Confirmed!</p>
-                <p className="text-xs">Billing clock has started.</p>
-              </div>
-            ) : (
-              <>
-                <p className="text-sm text-slate-600 mb-6">
-                  Technician arrived? Enter your work order reference and their unique code to start the billing clock.
-                </p>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <input 
-                    placeholder="Work Order (e.g. RG-EMG-123)" 
-                    className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-red-600 outline-none transition-all font-medium"
-                    value={arrivalData.workOrder}
-                    onChange={(e) => setArrivalData({...arrivalData, workOrder: e.target.value})}
-                  />
-                  <input 
-                    placeholder="Arrival Code (6-digit)" 
-                    className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-red-600 outline-none transition-all font-medium"
-                    value={arrivalData.code}
-                    onChange={(e) => setArrivalData({...arrivalData, code: e.target.value})}
-                  />
-                </div>
-                <button 
-                  onClick={handleArrivalConfirm}
-                  disabled={arrivalStatus === "loading"}
-                  className="w-full mt-4 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition shadow-md flex justify-center items-center gap-2"
-                >
-                  {arrivalStatus === "loading" ? <Loader2 className="animate-spin w-5 h-5" /> : "Confirm Arrival (GPS Required)"}
-                </button>
-              </>
-            )}
-          </div>
-
         </div>
       </div>
 
@@ -382,7 +294,7 @@ export default function EmergencyRepairPage() {
       </div>
 
       <style jsx>{`
-        .label { @apply block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide text-xs; }
+        .label { @apply block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide; }
         .input { @apply w-full p-3.5 rounded-lg border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-red-600 focus:ring-4 focus:ring-red-600/10 outline-none transition font-medium text-slate-900 placeholder:text-slate-400; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -408,7 +320,7 @@ function RateItem({ label, price, sub }: { label: string, price: string, sub: st
 function InputField({ label, ...props }: any) {
   return (
     <div className="w-full">
-      <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide text-xs">{label}</label>
+      <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">{label}</label>
       <input 
         {...props}
         className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-red-600 focus:ring-4 focus:ring-red-600/10 outline-none transition-all text-slate-900 font-medium placeholder:text-slate-400 shadow-sm hover:border-slate-300"
@@ -420,7 +332,7 @@ function InputField({ label, ...props }: any) {
 function InputSelect({ label, options, ...props }: any) {
   return (
     <div className="w-full">
-      <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide text-xs">{label}</label>
+      <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">{label}</label>
       <div className="relative">
         <select 
           {...props}

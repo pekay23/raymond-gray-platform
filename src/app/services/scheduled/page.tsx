@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Loader2, Zap, MapPin, Clock, ShieldCheck, CheckCircle2, AlertCircle, MessageCircle, Calendar } from "lucide-react";
+import { Loader2, Calendar, Clock, ShieldCheck, CheckCircle2, Zap, MessageCircle, AlertCircle, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,11 +22,8 @@ export default function ScheduledRepairPage() {
     email: "",
     agreed: false
   });
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
-  // --- ARRIVAL STATE (ADDED) ---
-  const [arrivalData, setArrivalData] = useState({ workOrder: "", code: "" });
-  const [arrivalStatus, setArrivalStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -62,44 +59,6 @@ export default function ScheduledRepairPage() {
     }
   };
 
-  // --- ARRIVAL CONFIRMATION SUBMIT (ADDED) ---
-  const handleArrivalConfirm = async () => {
-    if (!arrivalData.workOrder || !arrivalData.code) {
-      alert("Please enter both Work Order and Arrival Code");
-      return;
-    }
-    setArrivalStatus("loading");
-
-    // Get GPS Location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-        sendArrivalData(latitude, longitude);
-      }, (error) => {
-        console.error("GPS Error", error);
-        alert("GPS Location is required to confirm arrival. Please allow location access.");
-        setArrivalStatus("idle");
-      });
-    } else {
-      alert("GPS not supported on this browser.");
-      setArrivalStatus("idle");
-    }
-  };
-
-  const sendArrivalData = async (lat: number, lng: number) => {
-    try {
-      const res = await fetch("/api/confirm-arrival", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...arrivalData, latitude: lat, longitude: lng }),
-      });
-      if (res.ok) setArrivalStatus("success");
-      else setArrivalStatus("error");
-    } catch (error) {
-      setArrivalStatus("error");
-    }
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const value = e.target.type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value;
     setFormData({ ...formData, [e.target.name]: value });
@@ -130,7 +89,6 @@ export default function ScheduledRepairPage() {
             >
               <Calendar className="w-5 h-5" /> Book Scheduled Repair
             </button>
-
             <div className="inline-flex items-center gap-2 bg-slate-800/80 px-6 py-4 rounded-full border border-slate-700 shadow-xl backdrop-blur-sm">
               <Clock className="w-5 h-5 text-amber-400" />
               <span className="font-bold text-white">Call-out GHS 350 (includes 1st hour)</span>
@@ -211,7 +169,7 @@ export default function ScheduledRepairPage() {
 
                 {/* 5. Description (Full Width) */}
                 <div className="w-full">
-                  <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide text-xs">5. Repair description</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">5. Repair description</label>
                   <textarea 
                     name="description" 
                     rows={4} 
@@ -236,6 +194,7 @@ export default function ScheduledRepairPage() {
                   <InputField label="8. Your name" name="name" value={formData.name} onChange={handleChange} placeholder="Your full name" required />
                   <InputField label="9. Phone (WhatsApp)" name="phone" value={formData.phone} onChange={handleChange} placeholder="+233..." required />
                 </div>
+                
                 <InputField label="10. Email" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="your.email@example.com" required />
 
                 {/* Terms Agreement */}
@@ -266,58 +225,13 @@ export default function ScheduledRepairPage() {
                   >
                     {status === "loading" ? <Loader2 className="animate-spin" /> : "Pay GHS 350 & Confirm Booking"}
                   </button>
-
                   <a href="https://wa.me/233551010108" target="_blank" className="w-full py-3 border-2 border-green-600 text-green-700 font-bold rounded-xl transition-all flex items-center justify-center gap-2 hover:bg-green-50">
                     <MessageCircle className="w-5 h-5" /> Request via WhatsApp
                   </a>
                 </div>
-
               </form>
             )}
           </div>
-
-          {/* TECHNICIAN ARRIVAL CONFIRMATION (NOW FUNCTIONAL) */}
-          <div className="mt-12 bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-            <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <MapPin className="text-red-600" /> Confirm Technician Arrival
-            </h3>
-            
-            {arrivalStatus === "success" ? (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-center">
-                <CheckCircle2 className="w-8 h-8 mx-auto mb-2" />
-                <p className="font-bold">Arrival Confirmed!</p>
-                <p className="text-xs">Billing clock has started.</p>
-              </div>
-            ) : (
-              <>
-                <p className="text-sm text-slate-600 mb-6">
-                  Technician arrived? Enter your work order reference and their unique code to start the billing clock.
-                </p>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <input 
-                    placeholder="Work Order (e.g. RG-SCH-123)" 
-                    className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-blue-600 outline-none transition-all font-medium"
-                    value={arrivalData.workOrder}
-                    onChange={(e) => setArrivalData({...arrivalData, workOrder: e.target.value})}
-                  />
-                  <input 
-                    placeholder="Arrival Code (6-digit)" 
-                    className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-blue-600 outline-none transition-all font-medium"
-                    value={arrivalData.code}
-                    onChange={(e) => setArrivalData({...arrivalData, code: e.target.value})}
-                  />
-                </div>
-                <button 
-                  onClick={handleArrivalConfirm}
-                  disabled={arrivalStatus === "loading"}
-                  className="w-full mt-4 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition shadow-md flex justify-center items-center gap-2"
-                >
-                  {arrivalStatus === "loading" ? <Loader2 className="animate-spin w-5 h-5" /> : "Confirm Arrival (GPS Required)"}
-                </button>
-              </>
-            )}
-          </div>
-
         </div>
       </div>
 
@@ -328,7 +242,8 @@ export default function ScheduledRepairPage() {
       </div>
 
       <style jsx>{`
-        /* Hide Scrollbar but keep functionality */
+        .label { @apply block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide; }
+        .input { @apply w-full p-3.5 rounded-lg border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-red-600 focus:ring-4 focus:ring-red-600/10 outline-none transition font-medium text-slate-900 placeholder:text-slate-400; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
@@ -336,7 +251,7 @@ export default function ScheduledRepairPage() {
   );
 }
 
-// --- HELPER COMPONENTS (High Contrast Modal-Like Inputs) ---
+// --- HELPER COMPONENTS ---
 
 function RateItem({ label, price, sub }: { label: string, price: string, sub: string }) {
   return (
@@ -353,10 +268,10 @@ function RateItem({ label, price, sub }: { label: string, price: string, sub: st
 function InputField({ label, ...props }: any) {
   return (
     <div className="w-full">
-      <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide text-xs">{label}</label>
+      <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">{label}</label>
       <input 
         {...props}
-        className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 outline-none transition-all text-slate-900 font-medium placeholder:text-slate-400 shadow-sm hover:border-slate-300"
+        className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-red-600 focus:ring-4 focus:ring-red-600/10 outline-none transition-all text-slate-900 font-medium placeholder:text-slate-400 shadow-sm hover:border-slate-300"
       />
     </div>
   );
@@ -365,11 +280,11 @@ function InputField({ label, ...props }: any) {
 function InputSelect({ label, options, ...props }: any) {
   return (
     <div className="w-full">
-      <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide text-xs">{label}</label>
+      <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">{label}</label>
       <div className="relative">
         <select 
           {...props}
-          className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 outline-none transition-all text-slate-900 font-medium appearance-none cursor-pointer shadow-sm hover:border-slate-300"
+          className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-red-600 focus:ring-4 focus:ring-red-600/10 outline-none transition-all text-slate-900 font-medium appearance-none cursor-pointer shadow-sm hover:border-slate-300"
         >
           <option value="">Select...</option>
           {options.map((opt: string) => <option key={opt}>{opt}</option>)}

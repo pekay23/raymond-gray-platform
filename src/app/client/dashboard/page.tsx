@@ -2,9 +2,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { FileText, CheckCircle, Clock, Plus, ArrowRight, Play, AlertCircle } from "lucide-react";
+import { FileText, CheckCircle, Clock, Plus, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
-import { JobTimer } from "@/components/client/JobTimer"; // Import new component
+import { ActiveJobsCarousel } from "@/components/client/ActiveJobsCarousel"; // Ensure this component is created
 
 export default async function ClientDashboard() {
   const session = await getServerSession(authOptions);
@@ -23,8 +23,8 @@ export default async function ClientDashboard() {
     resolved: myInquiries.filter(i => i.status === "RESOLVED").length,
   };
 
-  // Find the currently active job (if any)
-  const activeJob = myInquiries.find(job => job.status === "IN_PROGRESS");
+  // Find ALL active jobs (Assigned OR In Progress) to show in the carousel
+  const activeJobs = myInquiries.filter(job => job.status === "IN_PROGRESS" || job.status === "ASSIGNED");
 
   return (
     <div className="p-4 md:p-8 space-y-8">
@@ -40,52 +40,9 @@ export default async function ClientDashboard() {
         </Link>
       </div>
 
-      {/* ACTIVE JOB BANNER (High Visibility) */}
-      {activeJob && (
-        <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-xl border-l-8 border-green-500 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-10">
-            <Clock className="w-32 h-32" />
-          </div>
-          
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">
-                LIVE JOB
-              </span>
-              <h2 className="text-xl font-bold">Technician is working on: {activeJob.name || "Service Request"}</h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <p className="text-slate-400 text-sm mb-1">Job Description</p>
-                <p className="text-slate-200 line-clamp-2">{activeJob.message}</p>
-                <div className="mt-4 flex items-center gap-2 text-sm text-slate-400">
-                  <Play className="w-4 h-4 text-green-400" />
-                  Started at: <span className="text-white">{activeJob.startedAt ? format(activeJob.startedAt, "h:mm a") : "Unknown"}</span>
-                </div>
-                <div className="mt-1 flex items-center gap-2 text-sm text-slate-400">
-                  <Clock className="w-4 h-4 text-blue-400" />
-                  Time Elapsed: {activeJob.startedAt ? <JobTimer startTime={activeJob.startedAt} /> : "0m"}
-                </div>
-              </div>
-
-              <div className="bg-white/10 p-4 rounded-xl border border-white/10">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="w-6 h-6 text-yellow-400 shrink-0" />
-                  <div>
-                    <h3 className="font-bold text-yellow-400 text-sm uppercase tracking-wide mb-1">Completion Code</h3>
-                    <p className="text-xs text-slate-300 mb-3">
-                      Provide this code to the technician ONLY when the job is finished to your satisfaction.
-                    </p>
-                    <div className="bg-white text-slate-900 font-mono text-2xl font-black tracking-[0.2em] text-center py-3 rounded-lg shadow-inner">
-                      {activeJob.endCode}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* ACTIVE JOBS CAROUSEL (Handles multiple jobs + Start/End Codes) */}
+      {activeJobs.length > 0 && (
+        <ActiveJobsCarousel jobs={activeJobs} />
       )}
 
       {/* Stats Cards */}
@@ -102,48 +59,48 @@ export default async function ClientDashboard() {
           <Link href="/client/requests" className="text-sm text-blue-600 hover:underline">View All</Link>
         </div>
         
-        <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
-          {myInquiries.map((req) => (
-            <div key={req.id} className="p-4 hover:bg-slate-50 transition group">
-              <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
-                
-                {/* Left: Status & Date */}
-                <div className="flex items-center gap-3">
-                  <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
-                    req.status === 'RESOLVED' ? 'bg-green-100 text-green-700' : 
-                    req.status === 'IN_PROGRESS' ? 'bg-purple-100 text-purple-700' :
-                    req.status === 'ASSIGNED' ? 'bg-blue-100 text-blue-700' :
-                    'bg-orange-100 text-orange-700'
-                  }`}>
-                    {req.status?.replace("_", " ") || 'PENDING'}
-                  </span>
-                  <span className="text-xs text-slate-400">
-                    {format(new Date(req.createdAt), "MMM d")}
-                  </span>
-                </div>
-
-                {/* Message Preview */}
-                <div className="flex-1 sm:ml-4">
-                  <p className="text-slate-900 font-medium text-sm line-clamp-1 break-words">
-                    {req.message}
-                  </p>
+        {myInquiries.length === 0 ? (
+          <div className="p-12 text-center text-slate-500">
+            <p className="mb-4">You haven't submitted any requests yet.</p>
+            <Link href="/services" className="text-blue-600 font-bold hover:underline">Make your first request</Link>
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
+            {myInquiries.map((req) => (
+              <div key={req.id} className="p-4 hover:bg-slate-50 transition group">
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
                   
-                  {/* START CODE: Show inline if assigned (Not In Progress) */}
-                  {req.status === "ASSIGNED" && req.startCode && (
-                    <div className="mt-2 inline-flex items-center gap-2 bg-yellow-50 border border-yellow-200 px-3 py-1 rounded-md">
-                      <span className="text-[10px] font-bold text-yellow-800 uppercase">Start Code:</span>
-                      <span className="text-sm font-mono font-black text-slate-900 tracking-widest">{req.startCode}</span>
-                    </div>
-                  )}
-                </div>
+                  {/* Left: Status & Date */}
+                  <div className="flex items-center gap-3">
+                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
+                      req.status === 'RESOLVED' ? 'bg-green-100 text-green-700' : 
+                      req.status === 'IN_PROGRESS' ? 'bg-purple-100 text-purple-700' :
+                      req.status === 'ASSIGNED' ? 'bg-blue-100 text-blue-700' :
+                      'bg-orange-100 text-orange-700'
+                    }`}>
+                      {req.status?.replace("_", " ") || 'PENDING'}
+                    </span>
+                    <span className="text-xs text-slate-400">
+                      {format(new Date(req.createdAt), "MMM d")}
+                    </span>
+                  </div>
 
-                <div className="hidden sm:block text-slate-300">
-                  <ArrowRight className="w-4 h-4" />
+                  {/* Message Preview */}
+                  <div className="flex-1 sm:ml-4">
+                    <p className="text-slate-900 font-medium text-sm line-clamp-1 break-words">
+                      {req.message}
+                    </p>
+                  </div>
+
+                  {/* LINKED ARROW */}
+                  <Link href="/client/requests" className="hidden sm:block text-slate-300 group-hover:text-blue-500 transition">
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
