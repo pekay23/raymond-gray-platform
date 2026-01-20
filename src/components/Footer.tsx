@@ -8,9 +8,13 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-8 md:gap-12">
         
         {/* Brand & Logo */}
-        <div className="col-span-1 space-y-4">
-          {/* LOGO FIX: Mobile = h-24 w-60 (Good), Desktop = h-40 w-80 (Bigger) */}
-          <Link href="/" className="block relative h-24 w-60 md:h-40 md:w-80 -ml-2 hover:opacity-90 transition cursor-pointer">
+        <div className="col-span-1 flex flex-col items-start">
+          
+          {/* LOGO ALIGNMENT FIX: 
+              -mt-14 pulls the image up drastically so the text inside aligns with "Company".
+              h-32 ensures the image is large enough to be legible.
+          */}
+          <Link href="/" className="block relative h-32 w-64 -ml-3 -mt-14 mb-0 hover:opacity-90 transition cursor-pointer">
             <Image 
               src="/raymond-gray-logo1.svg" 
               alt="Raymond Gray" 
@@ -19,15 +23,15 @@ export function Footer() {
             />
           </Link>
           
-          <p className="text-gray-400 text-xs leading-relaxed max-w-xs">
+          {/* Text needs -mt-6 to close the gap left by the cropped logo image */}
+          <p className="text-gray-400 text-xs leading-relaxed max-w-xs mb-4 -mt-6">
             Leading provider of integrated facilities management solutions in Ghana.
             <span className="block mt-1 font-medium text-gray-300">
               Proactive quality. Seamless possibility.
             </span>
           </p>
 
-          {/* SOCIAL ICONS */}
-          <div className="flex gap-4 pt-2">
+          <div className="flex gap-4">
             <SocialLink href="https://facebook.com" icon={<Facebook className="w-4 h-4" />} />
             <SocialLink href="https://instagram.com" icon={<Instagram className="w-4 h-4" />} />
             <SocialLink href="https://twitter.com" icon={<Twitter className="w-4 h-4" />} />
@@ -36,7 +40,7 @@ export function Footer() {
         </div>
         
         {/* Quick Links */}
-        <div>
+        <div className="mt-1"> {/* Added tiny top margin to align text baseline if needed */}
           <h4 className="text-sm font-bold mb-4 text-white uppercase tracking-wider">Company</h4>
           <ul className="space-y-2 text-gray-400 text-xs">
             <li><Link href="/" className="hover:text-red-500 transition">Home</Link></li>
@@ -48,7 +52,7 @@ export function Footer() {
         </div>
 
         {/* Portals */}
-        <div>
+        <div className="mt-1">
           <h4 className="text-sm font-bold mb-4 text-white uppercase tracking-wider">Portals</h4>
           <ul className="space-y-2 text-gray-400 text-xs">
             <li><Link href="/client/dashboard" className="hover:text-blue-400 transition">Client Portal</Link></li>
@@ -58,7 +62,7 @@ export function Footer() {
         </div>
         
         {/* Contact Info */}
-        <div>
+        <div className="mt-1">
           <h4 className="text-sm font-bold mb-4 text-white uppercase tracking-wider">Contact</h4>
           <ul className="space-y-3 text-gray-400 text-xs">
             <li className="leading-relaxed">
