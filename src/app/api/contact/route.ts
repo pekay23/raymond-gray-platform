@@ -10,6 +10,7 @@ const contactSchema = z.object({
   address: z.string().optional(),
   serviceType: z.string().optional(),
   message: z.string().min(1, "Message is required"),
+  status: z.string().optional(),
 });
 
 export async function POST(request: Request) {
@@ -40,8 +41,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true, data: newInquiry }, { status: 200 });
-  } catch (error) {
-    console.error('Database Error:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to submit inquiry' },
       { status: 500 }

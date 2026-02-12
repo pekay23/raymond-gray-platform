@@ -36,8 +36,7 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json(report);
-    } catch (error) {
-        console.error("Error creating discovery report:", error);
+    } catch {
         return NextResponse.json(
             { error: "Failed to create report" },
             { status: 500 }
@@ -82,8 +81,7 @@ export async function GET(req: Request) {
         });
 
         return NextResponse.json(reports);
-    } catch (error) {
-        console.error("Error fetching discovery reports:", error);
+    } catch {
         return NextResponse.json(
             { error: "Failed to fetch reports" },
             { status: 500 }

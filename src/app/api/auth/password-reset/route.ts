@@ -1,9 +1,17 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { prisma } from "@/lib/prisma"; // Ensure this path is correct
+import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  // Rate limit: 5 password reset requests per IP per 15 minutes
+  const ip = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "unknown";
+  const { success } = rateLimit(`password-reset:${ip}`);
+  if (!success) {
+    return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+  }
+
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   try {
@@ -20,22 +28,7 @@ export async function POST(req: Request) {
     const resetToken = crypto.randomBytes(32).toString("hex");
     const expires = new Date(new Date().getTime() + 1 * 60 * 60 * 1000); // 1 Hour Expiry
 
-    // 3. Save Token to Database (Upsert handles creating or updating)
-    await prisma.passwordResetToken.upsert({
-      where: { token: resetToken }, // This is just a placeholder requirement for upsert
-      create: {
-        identifier: email,
-        token: resetToken,
-        expires,
-      },
-      update: {
-        token: resetToken,
-        expires,
-      },
-    });
-
-    // Note: Since 'token' is unique, upsert by token is tricky if it doesn't exist. 
-    // Better approach for tokens tied to email: Delete old ones first.
+    // 3. Save Token to Database — Delete old tokens first, then create new one
     await prisma.passwordResetToken.deleteMany({ where: { identifier: email } });
     await prisma.passwordResetToken.create({
       data: {
@@ -65,8 +58,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ message: "Email sent" });
-  } catch (error) {
-    console.error("Reset error:", error);
+  } catch {
     return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
   }
 }

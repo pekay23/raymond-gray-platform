@@ -18,7 +18,7 @@ export async function POST(req: Request) {
         @@unique([identifier, token])
       }
     */
-    
+
     // For this example, let's assume you check your "PasswordResetToken" table
     // If you haven't created it yet, go to Step 3 below.
     const record = await prisma.passwordResetToken.findUnique({
@@ -46,8 +46,7 @@ export async function POST(req: Request) {
     await prisma.passwordResetToken.delete({ where: { token } });
 
     return NextResponse.json({ message: "Password reset successfully" });
-  } catch (error) {
-    console.error(error);
+  } catch {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

@@ -80,13 +80,13 @@ export default function AuditPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.agreed) return;
-    
+
     let fileUrls: string[] = [];
 
     // 1. Upload Files to Cloudinary First
     if (files.length > 0) {
       setStatus("uploading");
-      
+
       try {
         // Upload all files in parallel
         const uploadPromises = files.map(async (file) => {
@@ -98,17 +98,16 @@ export default function AuditPage() {
             `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
             { method: "POST", body: uploadData }
           );
-          
+
           if (!uploadRes.ok) throw new Error(`Failed to upload ${file.name}`);
-          
+
           const uploadJson = await uploadRes.json();
           return uploadJson.secure_url;
         });
 
         fileUrls = await Promise.all(uploadPromises);
-        
-      } catch (error) {
-        console.error("Upload Error:", error);
+
+      } catch {
         alert("One or more files failed to upload. Please try again or submit without files.");
         setStatus("idle");
         return;
@@ -118,7 +117,7 @@ export default function AuditPage() {
     setStatus("loading");
 
     // 2. Submit Data to Neon
-    const systemsLog = systems.map(s => 
+    const systemsLog = systems.map(s =>
       `- ${s.type || 'N/A'}: Qty ${s.quantity}, Age ${s.age}, Cond ${s.condition}`
     ).join("\n");
 
@@ -152,7 +151,7 @@ export default function AuditPage() {
         body: JSON.stringify({ name: formData.name, email: formData.email, phone: formData.phone, serviceType: "Building Audit", message }),
       });
       setStatus("success");
-      
+
       // Scroll to confirmation
       setTimeout(() => {
         formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -170,32 +169,32 @@ export default function AuditPage() {
 
   return (
     <div className="bg-slate-50 min-h-screen pb-12">
-      
+
       {/* 1. HERO HEADER */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-slate-900 pt-32 pb-32">
         <Image src="/bia.jpg" alt="Building Audit" fill className="object-cover opacity-30" priority />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
-        
+
         <div className="relative z-10 text-center text-white px-6 max-w-5xl mx-auto">
           <span className="inline-block py-1.5 px-4 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-sm font-bold tracking-widest uppercase mb-6 backdrop-blur-md">
             Comprehensive Audit • Facility Management • Building Assessment
           </span>
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            Building Audit & <br/> <span className="text-blue-400">Facility Management Assessment</span>
+            Building Audit & <br /> <span className="text-blue-400">Facility Management Assessment</span>
           </h1>
-          
+
           <p className="text-xl text-slate-200 font-light mb-8 leading-relaxed max-w-3xl mx-auto">
             Comprehensive building audit and inspection service for commercial buildings, residential blocks, and gated communities to enable effective facility management.
           </p>
-          
+
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-            <button 
+            <button
               onClick={scrollToForm}
               className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all shadow-[0_0_20px_rgba(37,99,235,0.5)] hover:shadow-[0_0_30px_rgba(37,99,235,0.7)] flex items-center gap-2"
             >
               <ClipboardCheck className="w-5 h-5" /> Request Audit
             </button>
-            
+
             <Link href="/services/servicing" className="inline-flex items-center gap-2 bg-slate-800/80 px-6 py-4 rounded-full border border-slate-700 shadow-xl backdrop-blur-sm hover:bg-slate-700/80 transition text-sm font-medium">
               <Wrench className="w-4 h-4 text-green-400" /> Looking for equipment servicing?
             </Link>
@@ -237,16 +236,16 @@ export default function AuditPage() {
 
       {/* Main Content Grid */}
       <div className="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-12 gap-12">
-        
+
         {/* LEFT COLUMN: Pricing & Value */}
         <div className="lg:col-span-5 space-y-8">
-          
+
           <div className="bg-slate-900 text-white p-8 rounded-2xl shadow-xl border border-slate-800 relative overflow-hidden">
             <div className="relative z-10">
               <h3 className="text-2xl font-bold mb-2">Comprehensive Audit Fee</h3>
               <div className="text-4xl font-bold text-blue-400 mb-1">GHS 5,000</div>
               <p className="text-slate-400 text-sm mb-6">Complete building inspection & assessment.</p>
-              
+
               <div className="bg-blue-600/20 border border-blue-500/50 p-4 rounded-xl">
                 <span className="block font-bold text-blue-300 text-lg mb-1">80% CREDIT OFFER</span>
                 <p className="text-sm text-blue-100 leading-relaxed">
@@ -307,24 +306,24 @@ export default function AuditPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="p-8 md:p-10 space-y-8 bg-white">
-                
+
                 {/* 1. Facility Type */}
-                <InputSelect 
-                  label="1. Facility Type" 
-                  name="facilityType" 
-                  value={formData.facilityType} 
-                  onChange={handleChange} 
-                  options={["Commercial Building", "Office Building", "Residential Apartment Block", "Gated Community", "Shopping Mall", "Hotel/Resort", "Hospital/Healthcare Facility", "Educational Institution", "Industrial Facility", "New Construction (90-day transition)", "Other"]} 
+                <InputSelect
+                  label="1. Facility Type"
+                  name="facilityType"
+                  value={formData.facilityType}
+                  onChange={handleChange}
+                  options={["Commercial Building", "Office Building", "Residential Apartment Block", "Gated Community", "Shopping Mall", "Hotel/Resort", "Hospital/Healthcare Facility", "Educational Institution", "Industrial Facility", "New Construction (90-day transition)", "Other"]}
                 />
 
                 {/* 2. Age & 3. Area */}
                 <div className="grid md:grid-cols-2 gap-6">
-                  <InputSelect 
-                    label="2. Building Age" 
-                    name="buildingAge" 
-                    value={formData.buildingAge} 
-                    onChange={handleChange} 
-                    options={["New Construction (Not yet occupied)", "Less than 5 years", "5-10 years", "10-20 years", "20-30 years", "Over 30 years", "Not sure"]} 
+                  <InputSelect
+                    label="2. Building Age"
+                    name="buildingAge"
+                    value={formData.buildingAge}
+                    onChange={handleChange}
+                    options={["New Construction (Not yet occupied)", "Less than 5 years", "5-10 years", "10-20 years", "20-30 years", "Over 30 years", "Not sure"]}
                   />
                   <InputField label="3. Total Building Area (sq ft/m²)" name="totalArea" value={formData.totalArea} onChange={handleChange} placeholder="e.g. 50000" />
                 </div>
@@ -352,12 +351,12 @@ export default function AuditPage() {
                       <Plus className="w-4 h-4" /> Add System
                     </button>
                   </div>
-                  
+
                   <div className="space-y-3">
                     {systems.map((system, index) => (
                       <div key={index} className="grid grid-cols-12 gap-2 items-start bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                         <div className="col-span-4">
-                          <select 
+                          <select
                             className="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium focus:border-blue-500 outline-none"
                             value={system.type}
                             onChange={(e) => updateSystem(index, 'type', e.target.value)}
@@ -420,12 +419,12 @@ export default function AuditPage() {
                   </div>
                   <InputField label="14. Email" type="email" name="email" value={formData.email} onChange={handleChange} required />
                   <InputField label="15. Access Instructions" name="accessInfo" value={formData.accessInfo} onChange={handleChange} placeholder="Security procedures, contact persons..." />
-                  
+
                   {/* File Upload UI - MODAL STYLE */}
                   <div className="w-full">
                     <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" multiple />
                     <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide text-xs">Upload Building Documents (Optional)</label>
-                    
+
                     {/* Selected Files List */}
                     {files.length > 0 && (
                       <div className="mb-3 space-y-2">
@@ -438,7 +437,7 @@ export default function AuditPage() {
                       </div>
                     )}
 
-                    <div 
+                    <div
                       onClick={handleFileClick}
                       className="w-full p-6 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-blue-50 hover:border-blue-400 transition-all cursor-pointer text-center group"
                     >
@@ -464,15 +463,15 @@ export default function AuditPage() {
                     <li>All payments will be made electronically via debit/credit cards, Mobile Money, instant bank transfer or similar options</li>
                   </ul>
                   <label className="flex items-center gap-3 mt-4 pt-4 border-t border-slate-200 cursor-pointer p-2 hover:bg-white rounded-lg transition select-none">
-                    <input type="checkbox" name="agreed" className="w-6 h-6 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer" required onChange={(e) => setFormData({...formData, agreed: e.target.checked})} />
+                    <input type="checkbox" name="agreed" className="w-6 h-6 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer" required onChange={(e) => setFormData({ ...formData, agreed: e.target.checked })} />
                     <span className="font-bold text-slate-900 text-base">I Agree to the Fee (GHS 5,000) & Terms</span>
                   </label>
                 </div>
 
                 {/* Actions */}
                 <div className="space-y-4 pt-2">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     disabled={status === "loading" || status === "uploading" || !formData.agreed}
                     className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-lg"
                   >
@@ -544,7 +543,7 @@ function InputField({ label, ...props }: any) {
   return (
     <div className="w-full">
       <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide text-xs">{label}</label>
-      <input 
+      <input
         {...props}
         className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 outline-none transition-all text-slate-900 font-medium placeholder:text-slate-400 shadow-sm hover:border-slate-300"
       />
@@ -557,7 +556,7 @@ function InputSelect({ label, options, ...props }: any) {
     <div className="w-full">
       <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide text-xs">{label}</label>
       <div className="relative">
-        <select 
+        <select
           {...props}
           className="w-full p-4 rounded-xl border-2 border-slate-200 bg-slate-100 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 outline-none transition-all text-slate-900 font-medium appearance-none cursor-pointer shadow-sm hover:border-slate-300"
         >

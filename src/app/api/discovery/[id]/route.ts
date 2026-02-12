@@ -37,8 +37,7 @@ export async function GET(
         }
 
         return NextResponse.json(report);
-    } catch (error) {
-        console.error("Error fetching report:", error);
+    } catch {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
@@ -84,8 +83,7 @@ export async function PUT(
         });
 
         return NextResponse.json(updatedReport);
-    } catch (error) {
-        console.error("Error updating report:", error);
+    } catch {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

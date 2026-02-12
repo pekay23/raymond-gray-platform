@@ -3,8 +3,16 @@ import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { Resend } from 'resend';
 import crypto from "crypto";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  // Rate limit: 5 signups per IP per 15 minutes
+  const ip = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "unknown";
+  const { success } = rateLimit(`signup:${ip}`);
+  if (!success) {
+    return NextResponse.json({ message: "Too many requests. Please try again later." }, { status: 429 });
+  }
+
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   try {
@@ -54,8 +62,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ message: "User created" }, { status: 201 });
-  } catch (error) {
-    console.error(error);
+  } catch {
     return NextResponse.json({ message: "Error creating user" }, { status: 500 });
   }
 }

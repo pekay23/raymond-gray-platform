@@ -14,27 +14,39 @@ export default function Home() {
   const vantaRef = useRef<HTMLDivElement>(null);
   const [vantaEffect, setVantaEffect] = useState<any>(null);
 
-  // Vanta.js Effect Hook
+  // Vanta.js Effect Hook — guarded against WebGL unavailability
   useEffect(() => {
     if (!vantaEffect && vantaRef.current) {
-      setVantaEffect(
-        NET({
-          el: vantaRef.current,
-          THREE: THREE,
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.00,
-          minWidth: 200.00,
-          scale: 1.00,
-          scaleMobile: 1.00,
-          color: 0x3b82f6, // Raymond Gray Blue
-          backgroundColor: 0xffffff, // White Background
-          points: 12.00,
-          maxDistance: 22.00,
-          spacing: 18.00
-        })
-      );
+      try {
+        // Check for WebGL support before initializing
+        const canvas = document.createElement("canvas");
+        const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+        if (!gl) {
+          console.warn("WebGL not supported — skipping Vanta.js effect");
+          return;
+        }
+
+        setVantaEffect(
+          NET({
+            el: vantaRef.current,
+            THREE: THREE,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x3b82f6, // Raymond Gray Blue
+            backgroundColor: 0xffffff, // White Background
+            points: 12.00,
+            maxDistance: 22.00,
+            spacing: 18.00
+          })
+        );
+      } catch (e) {
+        console.warn("Vanta.js initialization failed:", e);
+      }
     }
     return () => {
       if (vantaEffect) vantaEffect.destroy();
@@ -51,10 +63,10 @@ export default function Home() {
 
   return (
     <div className="bg-slate-50">
-      
+
       {/* 1. HERO SECTION */}
       <section ref={heroRef} className="relative h-screen flex flex-col items-center justify-center overflow-hidden bg-slate-900">
-        
+
         <motion.div style={{ y, opacity }} className="absolute inset-0 z-0">
           <Image
             src="/hero-home.jpg"
@@ -88,7 +100,7 @@ export default function Home() {
           </motion.div>
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.8 }}
@@ -101,15 +113,15 @@ export default function Home() {
       {/* 2. SERVICES (3D Tilt Grid with Images) */}
       <section className="py-32 bg-slate-900 text-white overflow-hidden relative">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
-        
+
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">Core Solutions</h2>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            <TiltServiceCard 
-              title="Integrated Facility Management" 
+            <TiltServiceCard
+              title="Integrated Facility Management"
               desc="Seamless Soft and Hard Facility Services."
               linkText="Explore IFM"
               linkHref="/services/ifm"
@@ -117,8 +129,8 @@ export default function Home() {
               color="blue"
               img="/exploreifm.jpg"
             />
-            <TiltServiceCard 
-              title="Engineering Services" 
+            <TiltServiceCard
+              title="Engineering Services"
               desc="Efficient Reliable Building Operations."
               linkText="Explore Engineering"
               linkHref="/services/engineering"
@@ -126,8 +138,8 @@ export default function Home() {
               color="blue"
               img="/engineeringservices.jpg"
             />
-            <TiltServiceCard 
-              title="Construction Finishing" 
+            <TiltServiceCard
+              title="Construction Finishing"
               desc="Classy Quality Finishes."
               linkText="Explore Finishing"
               linkHref="/services/construction"
@@ -148,20 +160,20 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-12 pointer-events-auto">
-            <FeatureCard 
-              title="Commitment" 
+            <FeatureCard
+              title="Commitment"
               desc="Our goal is to become a premier solution provider to clients in all sectors by constantly being ahead in the areas of innovation, client satisfaction and quality delivery. We are committed to building working partnerships that add value and consistently exceed expectations."
               icon={<Handshake />}
               img="/commit.jpg"
             />
-            <FeatureCard 
-              title="Work Ethic" 
+            <FeatureCard
+              title="Work Ethic"
               desc="We pride ourselves on our personal and comprehensive approach that identifies and solves issues before they become problems. No matter how big or small a job our sensitivity to your needs is of the highest importance. Because we understand the culture of maintenance and planning, reliability and a timely response are essential to our success."
               icon={<Heart />}
               img="/workethic.jpg"
             />
-            <FeatureCard 
-              title="Quality" 
+            <FeatureCard
+              title="Quality"
               desc="To reinforce quality standards Management has put in place a Quality Management System, that reviews quality objectives for all areas of the company. To assess effectiveness the Quality Management System is monitored by planned audits and management reviews with effective, corrective and preventive action implemented swiftly."
               icon={<Award />}
               img="/quality.jpg"
@@ -177,7 +189,7 @@ export default function Home() {
           <p className="text-lg text-slate-600 mb-12 max-w-3xl mx-auto">
             At Raymond Gray, we specialize in integrated facilities management, ensuring optimal performance for corporate, residential, and institutional clients through our comprehensive services.
           </p>
-          
+
           <div className="grid grid-cols-2 gap-8 max-w-2xl mx-auto">
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
               <div className="text-5xl font-bold text-blue-600 mb-2">15+</div>
@@ -194,14 +206,14 @@ export default function Home() {
       {/* 5. FINAL CTA */}
       <section className="py-24 bg-gradient-to-br from-[#1E3059] to-blue-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
-        
+
         <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-3xl md:text-5xl font-bold mb-8 leading-tight drop-shadow-lg">
-            One partner. One contract. One SLA. <br/> 
+            One partner. One contract. One SLA. <br />
             <span className="text-blue-300">It's just who we are!</span>
           </h2>
-          <Link 
-            href="/contact" 
+          <Link
+            href="/contact"
             className="inline-flex items-center gap-2 px-10 py-5 bg-white text-slate-900 hover:bg-slate-100 font-bold rounded-lg text-lg transition-all shadow-xl hover:-translate-y-1"
           >
             Get Started Today <ArrowRight className="w-5 h-5" />
@@ -217,7 +229,7 @@ export default function Home() {
 
 function FeatureCard({ title, desc, icon, img }: { title: string, desc: string, icon: any, img: string }) {
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ y: -10 }}
       className="relative overflow-hidden p-8 rounded-2xl shadow-lg border border-slate-100 group h-full"
     >
@@ -271,11 +283,10 @@ function TiltServiceCard({ title, desc, linkText, linkHref, icon, color, img }: 
         <h3 className="text-3xl font-bold mb-4 text-white leading-tight">{title}</h3>
         <p className="text-slate-300 leading-relaxed mb-6">{desc}</p>
       </div>
-      
+
       <div style={{ transform: "translateZ(20px)" }} className="relative z-10">
-        <Link href={linkHref} className={`font-bold text-sm flex items-center gap-2 ${
-          color === 'blue' ? 'text-blue-400 group-hover:text-blue-300' : 'text-red-400 group-hover:text-red-300'
-        }`}>
+        <Link href={linkHref} className={`font-bold text-sm flex items-center gap-2 ${color === 'blue' ? 'text-blue-400 group-hover:text-blue-300' : 'text-red-400 group-hover:text-red-300'
+          }`}>
           {linkText} <ArrowRight className="w-4 h-4" />
         </Link>
       </div>

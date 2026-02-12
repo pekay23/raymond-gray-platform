@@ -7,7 +7,7 @@ import { hash } from "bcryptjs";
 // 1. GET: List all users
 export async function GET() {
   const session = await getServerSession(authOptions);
-  
+
   if (session?.user?.role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -23,7 +23,7 @@ export async function GET() {
 // 2. POST: Create a new user (with specific Role)
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  
+
   if (session?.user?.role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -34,6 +34,7 @@ export async function POST(req: Request) {
 
     const newUser = await prisma.user.create({
       data: { name, email, password: hashedPassword, role },
+      select: { id: true, name: true, email: true, role: true, emailVerified: true },
     });
 
     return NextResponse.json(newUser);
@@ -42,10 +43,44 @@ export async function POST(req: Request) {
   }
 }
 
-// 3. DELETE: Remove a user
+// 3. PATCH: Update a user
+export async function PATCH(req: Request) {
+  const session = await getServerSession(authOptions);
+
+  if (session?.user?.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id, name, email, password, role, image } = await req.json();
+
+    if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
+
+    const updateData: any = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (role) updateData.role = role;
+    if (image !== undefined) updateData.image = image;
+    if (password) {
+      updateData.password = await hash(password, 12);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: updateData,
+      select: { id: true, name: true, email: true, role: true, emailVerified: true, image: true },
+    });
+
+    return NextResponse.json(updatedUser);
+  } catch {
+    return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
+  }
+}
+
+// 4. DELETE: Remove a user
 export async function DELETE(req: Request) {
   const session = await getServerSession(authOptions);
-  
+
   if (session?.user?.role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -59,3 +94,4 @@ export async function DELETE(req: Request) {
 
   return NextResponse.json({ success: true });
 }
+

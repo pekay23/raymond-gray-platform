@@ -21,8 +21,8 @@ export default function InquiriesPage() {
       } else {
         setInquiries([]);
       }
-    } catch (e) {
-      console.error(e);
+    } catch {
+      // silently handle fetch errors
     }
     setIsLoading(false);
   };
@@ -47,7 +47,7 @@ export default function InquiriesPage() {
     }
   };
 
-  const filteredInquiries = inquiries.filter((inq) => 
+  const filteredInquiries = inquiries.filter((inq) =>
     inq.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     inq.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     inq.message.toLowerCase().includes(searchTerm.toLowerCase())
@@ -55,26 +55,26 @@ export default function InquiriesPage() {
 
   return (
     <div className="p-4 md:p-8 min-h-screen">
-      
+
       {/* HEADER & SEARCH */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Inquiries</h1>
           <p className="text-slate-500 text-sm">Manage client messages.</p>
         </div>
-        
+
         <div className="flex gap-2 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
             <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
+            <input
+              type="text"
+              placeholder="Search..."
               className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button 
+          <button
             onClick={fetchInquiries}
             className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 transition bg-white"
           >
@@ -82,7 +82,7 @@ export default function InquiriesPage() {
           </button>
         </div>
       </div>
-      
+
       {isLoading ? (
         <div className="p-12 text-center text-slate-400 flex flex-col items-center">
           <Loader2 className="w-8 h-8 animate-spin mb-2" />
@@ -140,7 +140,7 @@ export default function InquiriesPage() {
           <div className="md:hidden space-y-4">
             {filteredInquiries.map((inq) => (
               <div key={inq.id} className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                
+
                 {/* Card Header: Name & Date */}
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-2">
@@ -167,15 +167,15 @@ export default function InquiriesPage() {
 
                 {/* Action Buttons (Full Width on Mobile) */}
                 <div className="grid grid-cols-2 gap-3">
-                  <Link 
-                    href={`/admin/inquiries/${inq.id}`} 
+                  <Link
+                    href={`/admin/inquiries/${inq.id}`}
                     className="flex items-center justify-center gap-2 bg-blue-50 text-blue-700 py-2.5 rounded-lg font-bold text-sm border border-blue-100 active:scale-95 transition"
                   >
                     <Eye className="w-4 h-4" /> View
                   </Link>
-                  
-                  <button 
-                    onClick={() => handleDelete(inq.id)} 
+
+                  <button
+                    onClick={() => handleDelete(inq.id)}
                     className="flex items-center justify-center gap-2 bg-white text-red-600 py-2.5 rounded-lg font-bold text-sm border border-slate-200 hover:bg-red-50 active:scale-95 transition"
                   >
                     <Trash2 className="w-4 h-4" /> Delete
