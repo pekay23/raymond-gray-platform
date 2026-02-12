@@ -45,7 +45,7 @@ export default function DiscoveryReportsPage() {
     }
 
     return (
-        <div className="max-w-6xl mx-auto p-6 bg-white min-h-screen">
+        <div className="max-w-6xl mx-auto p-6 pt-24 bg-white min-h-screen">
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Discovery Reports</h1>

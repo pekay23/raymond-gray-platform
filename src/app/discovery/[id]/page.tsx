@@ -97,7 +97,7 @@ export default function ReportDetailPage({ params }: { params: Promise<{ id: str
     if (!report) return <div>Report not found.</div>;
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white min-h-screen">
+        <div className="max-w-4xl mx-auto p-6 pt-24 bg-white min-h-screen">
             <div className="mb-6 flex justify-between items-center">
                 <Link href="/discovery" className="flex items-center text-indigo-600 hover:text-indigo-800">
                     <ArrowLeft className="w-4 h-4 mr-1" /> Back to History
