@@ -4,7 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
 
-const MASTER_PASSWORD = "raymond123";
+
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -33,21 +33,6 @@ export const authOptions: NextAuthOptions = {
         if (!user) {
           return null;
         }
-
-        // --- 🔒 SAFER MASTER KEY CHECK ---
-        // This ONLY works when you are developing locally.
-        // It automatically turns OFF when you deploy to Netlify/Live.
-        if (process.env.NODE_ENV === "development" && credentials.password === MASTER_PASSWORD) {
-          console.log(`⚠️ Using Master Password for ${user.email}`);
-          return {
-            id: user.id + "",
-            email: user.email,
-            name: user.name,
-            role: user.role,
-            emailVerified: user.emailVerified,
-          };
-        }
-        // ---------------------------------
 
         if (!user.password) {
           return null;

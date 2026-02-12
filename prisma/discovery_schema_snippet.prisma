@@ -1,0 +1,65 @@
+model DiscoveryReport {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  authorId  String
+  author    User     @relation("ReportAuthor", fields: [authorId], references: [id])
+  clientId  String?
+  client    User?    @relation("ReportClient", fields: [clientId], references: [id])
+  
+  // 1. Meeting Details
+  meetingDate     DateTime
+  contactPerson   String?
+  meetingLocation String?
+  platform        String?  // If online
+  rgAttendees     String[] // List of RG staff
+  opportunityType String   // New Client, Referral, Existing, Expansion
+  sitesDiscussed  Int?
+
+  // 2. Client Objective
+  clientObjectives String? // Text Area
+  painPoints       String? // Text Area
+
+  // 3. Portfolio Snapshot (Stored as JSON for flexibility)
+  // Structure: [{ siteName, locationType, units, occupancy, handoverDate, notes }]
+  portfolioSnapshot Json?
+
+  // 4. Handover & Warranties
+  handoverDocsAvailable Boolean?
+  dlpPeriod             String? // "Start - End"
+  keyOEMWarranties      String?
+  snagListKnown         Boolean?
+  asBuiltDrawings       Boolean?
+  complianceReqs        String?
+
+  // 5. Services Required
+  servicesRequired String[] // Array of checked service names
+  otherServices    String?
+
+  // 6. Service Levels & KPIs
+  responseTimes       String?
+  reportingFrequency  String?
+  requiredKPIs        String?
+  approvalThresholds  String?
+  communicationChannels String?
+
+  // 7. Commercial & Contract
+  preferredModel   String?
+  budgetConstraints String?
+  contractTerm     String?
+  startDate        String?
+  decisionTimeline String?
+
+  // 8. Agreed Next Steps (JSON)
+  // Structure: [{ action, owner, dueDate, status }]
+  nextSteps Json?
+
+  // 9. Additional Notes
+  additionalNotes String?
+
+  // Sign-off
+  preparedBy String?
+  signature  String? // URL or base64
+}

@@ -3,10 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, Users, MessageSquare, Settings, LogOut, 
-  Menu, X, Home 
-} from "lucide-react";
+import { LayoutDashboard, Users, MessageSquare, Settings, LogOut, Menu, X, Home, FileText } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -15,7 +12,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen flex bg-slate-50 relative">
-      
+
       {/* MOBILE HEADER */}
       <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-slate-900 text-white flex items-center justify-between px-4 z-50 shadow-md">
         <Link href="/" className="font-bold text-lg tracking-tight">
@@ -28,7 +25,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* OVERLAY */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
@@ -51,7 +48,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <X className="w-5 h-5" />
           </button>
         </div>
-        
+
         {/* ADDED 'no-scrollbar' HERE */}
         <nav className="p-4 space-y-2 overflow-y-auto max-h-[calc(100vh-140px)] no-scrollbar">
           <NavLink href="/" icon={<Home />} label="Back to Website" active={false} onClick={() => setIsSidebarOpen(false)} />
@@ -59,20 +56,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <NavLink href="/admin/dashboard" icon={<LayoutDashboard />} label="Dashboard" active={pathname === '/admin/dashboard'} onClick={() => setIsSidebarOpen(false)} />
           <NavLink href="/admin/users" icon={<Users />} label="User Management" active={pathname?.startsWith('/admin/users')} onClick={() => setIsSidebarOpen(false)} />
           <NavLink href="/admin/inquiries" icon={<MessageSquare />} label="Inquiries" active={pathname?.startsWith('/admin/inquiries')} onClick={() => setIsSidebarOpen(false)} />
+          <NavLink href="/discovery" icon={<FileText className="w-5 h-5" />} label="Discovery Reports" active={pathname?.startsWith('/discovery')} onClick={() => setIsSidebarOpen(false)} />
           <div className="pt-8 pb-2">
             <p className="px-4 text-xs font-bold text-slate-500 uppercase">Settings</p>
           </div>
           <NavLink href="/admin/settings" icon={<Settings />} label="Platform Config" active={pathname === '/admin/settings'} onClick={() => setIsSidebarOpen(false)} />
         </nav>
-        
+
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-800 bg-slate-900">
-           <button 
-             onClick={() => signOut({ callbackUrl: '/signin' })} 
-             className="flex w-full items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
-           >
-             <LogOut className="w-5 h-5" />
-             <span className="font-medium">Sign Out</span>
-           </button>
+          <button
+            onClick={() => signOut({ callbackUrl: '/signin' })}
+            className="flex w-full items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="font-medium">Sign Out</span>
+          </button>
         </div>
       </aside>
 
@@ -86,14 +84,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 function NavLink({ href, icon, label, active, onClick }: any) {
   return (
-    <Link 
-      href={href} 
+    <Link
+      href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-        active 
-          ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20" 
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${active
+          ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
           : "text-slate-300 hover:text-white hover:bg-slate-800"
-      }`}
+        }`}
     >
       <span className="[&>svg]:w-5 [&>svg]:h-5">{icon}</span>
       <span className="font-medium">{label}</span>

@@ -1,18 +1,32 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // This connects to your Neon DB
+import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
+
+// Define Validation Schema
+const contactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  serviceType: z.string().optional(),
+  message: z.string().min(1, "Message is required"),
+});
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, phone, address, serviceType, message } = body;
 
-    // Validate data
-    if (!name || !email || !message) {
+    // Validate Input
+    const result = contactSchema.safeParse(body);
+
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Validation Failed', details: result.error.format() },
         { status: 400 }
       );
     }
+
+    const { name, email, phone, address, serviceType, message } = result.data;
 
     // Save to Neon Database
     const newInquiry = await prisma.inquiry.create({
@@ -20,8 +34,8 @@ export async function POST(request: Request) {
         name,
         email,
         phone: phone || '',
-        address: address || '', // Save the address here
-        message: `[Service: ${serviceType}] ${message}`, // Combine service + message
+        address: address || '',
+        message: `[Service: ${serviceType || 'General'}] ${message}`,
       },
     });
 

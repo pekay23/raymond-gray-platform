@@ -63,6 +63,10 @@ model User {
   
   // Relation to jobs assigned to this user (if they are a technician)
   assignedJobs  Inquiry[] @relation("TechJobs")
+  
+  // Discovery Reports
+  authoredReports DiscoveryReport[] @relation("ReportAuthor")
+  clientReports   DiscoveryReport[] @relation("ReportClient")
 }
 
 model Account {
@@ -109,4 +113,68 @@ model PasswordResetToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model DiscoveryReport {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  authorId  String
+  author    User     @relation("ReportAuthor", fields: [authorId], references: [id])
+  clientId  String?
+  client    User?    @relation("ReportClient", fields: [clientId], references: [id])
+  
+  // 1. Meeting Details
+  meetingDate     DateTime
+  contactPerson   String?
+  meetingLocation String?
+  platform        String?
+  rgAttendees     String[]
+  opportunityType String?
+  sitesDiscussed  Int?
+
+  // 2. Client Objective
+  clientObjectives String?
+  painPoints       String?
+
+  // 3. Portfolio Snapshot (JSON)
+  portfolioSnapshot Json?
+
+  // 4. Handover & Warranties
+  handoverDocsAvailable Boolean?
+  dlpPeriod             String?
+  keyOEMWarranties      String?
+  snagListKnown         Boolean?
+  asBuiltDrawings       Boolean?
+  complianceReqs        String?
+
+  // 5. Services Required
+  servicesRequired String[]
+  otherServices    String?
+
+  // 6. Service Levels & KPIs
+  responseTimes       String?
+  reportingFrequency  String?
+  requiredKPIs        String?
+  approvalThresholds  String?
+  communicationChannels String?
+
+  // 7. Commercial & Contract
+  preferredModel   String?
+  budgetConstraints String?
+  contractTerm     String?
+  startDate        String?
+  decisionTimeline String?
+
+  // 8. Agreed Next Steps (JSON)
+  nextSteps Json?
+
+  // 9. Additional Notes
+  additionalNotes String?
+
+  // Sign-off
+  preparedBy String?
+  signature  String?
 }

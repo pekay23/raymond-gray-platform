@@ -3,9 +3,9 @@ import { Resend } from 'resend';
 import { prisma } from "@/lib/prisma"; // Ensure this path is correct
 import crypto from "crypto";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   try {
     const { email } = await req.json();
 
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       // Security: Don't reveal if user exists. Fake success.
-      return NextResponse.json({ message: "Email sent" }); 
+      return NextResponse.json({ message: "Email sent" });
     }
 
     // 2. Generate a Secure Token
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
         expires,
       },
     });
-    
+
     // Note: Since 'token' is unique, upsert by token is tricky if it doesn't exist. 
     // Better approach for tokens tied to email: Delete old ones first.
     await prisma.passwordResetToken.deleteMany({ where: { identifier: email } });
